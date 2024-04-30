@@ -15,13 +15,13 @@ To get started with this project, follow these steps:
 1. Clone this repository to your local machine.
 2. Open the MagicalImagery.sln project file
 3. Build the Docker Containers:
-1. Set "docker-compose" as start project.
-2. Run "Db only" as "Start without Debugging"  
+    1. Set "docker-compose" as start project.
+    2. Run "Db only" as "Start without Debugging"  
 4. Set-up Database
-1. Open Paket-Manager-Console
-2. Apply Server.UI als start project.
-3. Apply Infrastructure as standard project in Paket-Manager-Console
-4. Type `Update-Database` and run it
+    1. Open Paket-Manager-Console
+    2. Apply Server.UI als start project.
+    3. Apply Infrastructure as standard project in Paket-Manager-Console
+    4. Type `Update-Database` and run it
 5. Run application in Debug (F5) or Normal Mode (Ctrl + F5)
 6. If it's the first time starting the project, you'll be asked to install a HTTPS certificate. Accept / Install it.
 
