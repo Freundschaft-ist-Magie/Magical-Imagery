@@ -8,7 +8,7 @@ The main goal of this project is to create a webshop for selling high-quality im
 - [Docker Engine](https://docs.docker.com/engine/install/)
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) (optional)
 
-## Getting Started (CLI)
+## Getting Started (GUI)
 
 To get started with this project, follow these steps:
 
@@ -25,7 +25,9 @@ To get started with this project, follow these steps:
 5. Run application in Debug (F5) or Normal Mode (Ctrl + F5)
 6. If it's the first time starting the project, you'll be asked to install a HTTPS certificate. Accept / Install it.
 
-## Getting Started (CMD)
+## Getting Started (CLI)
+
+To get started with this project, follow these steps:
 
 1. Clone this repository to your local machine.
 2. Open the `MagicalImagery.sln` project file.
