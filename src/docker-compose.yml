@@ -1,0 +1,35 @@
+version: '3.4'
+
+services:
+  web:
+    image: ${DOCKER_REGISTRY-}web
+    build:
+      context: .
+      dockerfile: Web/Dockerfile
+  db:
+      image: mysql:5.7
+      environment:
+        MYSQL_ROOT_PASSWORD: rootpassword  
+        MYSQL_DATABASE: magical         
+        MYSQL_USER: magical                   
+        MYSQL_PASSWORD: magical123       
+      volumes:
+        - magical-data:/var/lib/mysql        
+      ports:
+        - "3306:3306"                      
+      restart: always
+  
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: db                        
+      PMA_USER: user                      
+      PMA_PASSWORD: userpassword          
+    ports:
+      - "8080:80"                         
+    restart: always
+    depends_on:
+      - db
+
+volumes:
+  magical-data: 
