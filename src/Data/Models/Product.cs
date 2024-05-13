@@ -15,7 +15,7 @@ namespace Data.Models
         public string? Category { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
-        public string Measurements => $"{Width}X{Height}";
+        public string Pixel => $"{Width}X{Height}";
         public int LicenceId { get; set; }
         public Licence? Licence { get; set; }
     }
