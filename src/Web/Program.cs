@@ -1,9 +1,9 @@
+using Data;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Web.Components;
 using Web.Components.Account;
-using Web.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 

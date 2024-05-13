@@ -1,3 +1,4 @@
+using Data;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -8,7 +9,6 @@ using System.Security.Claims;
 using System.Text.Json;
 using Web.Components.Account.Pages;
 using Web.Components.Account.Pages.Manage;
-using Web.Data;
 
 namespace Microsoft.AspNetCore.Routing
 {
