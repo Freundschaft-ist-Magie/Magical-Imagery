@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web", "Web\Web.csproj", "{8
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{FBF87559-2666-47D1-8161-625F24FE6751}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{486B71D9-9A05-41D8-9C0B-05B45AE90760}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", "{486B71D9-9A05-41D8-9C0B-05B45AE90760}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
