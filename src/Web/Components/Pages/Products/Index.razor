@@ -9,32 +9,19 @@
                 Data="@products" TItem="Product" PageSize="5"
                 LoadData=@LoadData
                 Count=@count
+                WrapItems=true
                 PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true">
     <Template Context="product">
-        <RadzenCard Style="width: 100%; padding: 0;">
-            <RadzenRow Gap="0">
-                <RadzenColumn Size="12" SizeLG="3" Class="rz-p-4 product-title">
-                    <RadzenStack AlignItems="AlignItems.Center" Class="rz-mx-auto rz-my-12">
-                        <RadzenImage Path="images/finstere_schatten.webp" Style="width: 15rem;" AlternateText="community" />
-                    </RadzenStack>
-                    <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" class="rz-color-primary">@(product.Name)</RadzenText>
-                </RadzenColumn>
-                <RadzenColumn Size="12" SizeLG="7" Class="rz-p-4">
-                    <RadzenRow Gap="0">
-                        <RadzenColumn Size="12" SizeMD="6" SizeLG="2">
-                            <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" Class="rz-mb-0">In Stock</RadzenText>
-                            <RadzenText TextStyle="TextStyle.Body2">@(1)</RadzenText>
-                        </RadzenColumn>
-
-                        <RadzenColumn Size="12" SizeMD="6" SizeLG="3" Class="rz-text-align-start rz-text-align-lg-end">
-                            <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Shade="Shade.Lighter" class="price-badge" Text=@($"{String.Format(new System.Globalization.CultureInfo("en-US"), "{0:C}", product.Price)}") />
-                        </RadzenColumn>
-                    </RadzenRow>
-                </RadzenColumn>
-                <RadzenColumn Size="12" SizeLG="2" Class="rz-p-4">
-                    <RadzenButton Text="Order now" Style="width: 100%" />
-                </RadzenColumn>
-            </RadzenRow>
+        <RadzenCard Style="">
+            <RadzenStack AlignItems="AlignItems.Center" Class="rz-mx-auto rz-my-12">
+                <RadzenImage Path="images/finstere_schatten.webp" Style="width: 15rem;" AlternateText="community" />
+            </RadzenStack>
+            <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" class="rz-color-primary">@(product.Name)</RadzenText>
+            <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" Class="rz-mb-0">In Stock</RadzenText>
+            <RadzenText TextStyle="TextStyle.Body2">@(1)</RadzenText>
+            <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Shade="Shade.Lighter" class="price-badge"
+                         Text=@($"{String.Format(new System.Globalization.CultureInfo("en-US"), "{0:C}", product.Price)}") />
+            <RadzenButton Text="Order now" Style="width: 100%" />
         </RadzenCard>
     </Template>
 </RadzenDataList>
