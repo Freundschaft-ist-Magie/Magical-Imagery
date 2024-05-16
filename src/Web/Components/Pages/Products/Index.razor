@@ -1,7 +1,7 @@
 ﻿@page "/products"
 @using Data.Models
 @using Microsoft.EntityFrameworkCore
-
+@inject DialogService DialogService
 @inject IDbContextFactory<ApplicationDbContext> DbFactory
 
 
@@ -13,32 +13,20 @@
                 PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true">
     <Template Context="product">
         <RadzenCard Style="">
-            <RadzenStack AlignItems="AlignItems.Center" Class="rz-mx-auto rz-my-12">
-                <RadzenImage Path="images/finstere_schatten.webp" Style="width: 15rem;" AlternateText="community" />
-            </RadzenStack>
-            <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" class="rz-color-primary">@(product.Name)</RadzenText>
-            <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" Class="rz-mb-0">In Stock</RadzenText>
-            <RadzenText TextStyle="TextStyle.Body2">@(1)</RadzenText>
+            <div @onclick="() => ShowDetails(product)">
+                <RadzenStack AlignItems="AlignItems.Center" Class="rz-mx-auto rz-my-12">
+                    <RadzenImage Path="images/finstere_schatten.webp" Style="width: 15rem;" AlternateText="community" />
+                </RadzenStack>
+                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" class="rz-color-primary">@(product.Name)</RadzenText>
+                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" Class="rz-mb-0">In Stock</RadzenText>
+                <RadzenText TextStyle="TextStyle.Body2">@(1)</RadzenText>
+            </div>
             <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Shade="Shade.Lighter" class="price-badge"
                          Text=@($"{String.Format(new System.Globalization.CultureInfo("en-US"), "{0:C}", product.Price)}") />
             <RadzenButton Text="Order now" Style="width: 100%" />
         </RadzenCard>
     </Template>
 </RadzenDataList>
-
-<style>
-    .product-title {
-        min-height: 72px;
-        background-color: var(--rz-primary-lighter);
-    }
-
-    .price-badge {
-        font-size: 16px;
-        font-weight: bold;
-        line-height: 20px;
-        padding: 8px;
-    }
-</style>
 
 @code {
     bool allowVirtualization;
@@ -61,5 +49,16 @@
 
         }
         isLoading = false;
+    }
+
+    async Task ShowDetails(Product product)
+    {
+        await DialogService.OpenAsync<Details>(product.Name,
+            new Dictionary<string, object>
+                {
+                    { "Product", product }
+                },
+            new DialogOptions() { Width = "60vw", Height = "80vh", Resizable = true, Draggable = false }
+        );
     }
 }

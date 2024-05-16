@@ -1,0 +1,18 @@
+﻿@using Data.Models
+<RadzenCard Style="">
+    <RadzenStack AlignItems="AlignItems.Center">
+        <RadzenImage Path="images/finstere_schatten.webp" Style="width: 15rem;" AlternateText="community" />
+    </RadzenStack>
+    <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" class="rz-color-primary">@(Product.Name)</RadzenText>
+    <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" Class="rz-mb-0">In Stock</RadzenText>
+    <RadzenText TextStyle="TextStyle.Body2">@(1)</RadzenText>
+    <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Shade="Shade.Lighter" class="price-badge"
+                 Text=@($"{String.Format(new System.Globalization.CultureInfo("en-US"), "{0:C}", Product.Price)}") />
+    <RadzenButton Text="Order now" Style="width: 100%" />
+</RadzenCard>
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public Product Product { get; set; } = default!;
+}
