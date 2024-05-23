@@ -1,18 +1,57 @@
-﻿@using Data.Models
-<RadzenCard Style="">
-    <RadzenStack AlignItems="AlignItems.Center">
-        <RadzenImage Path="images/finstere_schatten.webp" Style="width: 15rem;" AlternateText="community" />
-    </RadzenStack>
-    <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" class="rz-color-primary">@(Product.Name)</RadzenText>
-    <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" Class="rz-mb-0">In Stock</RadzenText>
-    <RadzenText TextStyle="TextStyle.Body2">@(1)</RadzenText>
-    <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Shade="Shade.Lighter" class="price-badge"
-                 Text=@($"{String.Format(new System.Globalization.CultureInfo("en-US"), "{0:C}", Product.Price)}") />
-    <RadzenButton Text="Order now" Style="width: 100%" />
-</RadzenCard>
+﻿@page "/products/details/{id:int}"
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
+@inject DialogService DialogService
+@using Data.Models
+@using Microsoft.EntityFrameworkCore
+@if(Product != null)
+{
+    <RadzenCard Style="">
+        <RadzenStack AlignItems="AlignItems.Center">
+            <RadzenImage Path="images/finstere_schatten.webp" Style="width: 15rem;" AlternateText="community" />
+        </RadzenStack>
+        <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" class="rz-color-primary">@(Product.Name)</RadzenText>
+        <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" Class="rz-mb-0">In Stock</RadzenText>
+        <RadzenText TextStyle="TextStyle.Body2">@(1)</RadzenText>
+        <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Shade="Shade.Lighter" class="price-badge"
+                     Text=@($"{String.Format(new System.Globalization.CultureInfo("en-US"), "{0:C}", Product.Price)}") />
+        <RadzenButton Text="Order now" Style="width: 100%" />
+    </RadzenCard>
+    <RadzenButton ButtonStyle="ButtonStyle.Secondary" Click="ShowEdit">Bearbeiten</RadzenButton>
+}
+@if(ErrorMessage != null)
+{
+    <div>
+        Ein Fehler ist Aufgetreten
+    </div>
+}
 
 @code {
     [Parameter]
-    [EditorRequired]
-    public Product Product { get; set; } = default!;
+    public int Id { get; set; }
+
+    public Product Product { get; set; }
+    public string ErrorMessage;
+
+    protected override async Task OnInitializedAsync() 
+    {
+        using var context = await DbFactory.CreateDbContextAsync();
+        var product = await context.Products.FirstOrDefaultAsync(p => p.Id == Id);
+        if (product == null)
+        {
+            ErrorMessage = "Produkt konnte nicht gefunden werden";
+            return;
+        }
+        Product = product;
+    }
+
+    async Task ShowEdit()
+    {
+        await DialogService.OpenAsync<Edit>(Product.Name,
+            new Dictionary<string, object>
+                    {
+                    { "Product", Product }
+                    },
+            new DialogOptions() { Width = "60vw", Height = "80vh", Resizable = true, Draggable = false }
+        );
+    }
 }

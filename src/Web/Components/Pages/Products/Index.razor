@@ -1,7 +1,7 @@
 ﻿@page "/products"
 @using Data.Models
 @using Microsoft.EntityFrameworkCore
-@inject DialogService DialogService
+@inject NavigationManager Navigation
 @inject IDbContextFactory<ApplicationDbContext> DbFactory
 
 
@@ -13,7 +13,7 @@
                 PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true">
     <Template Context="product">
         <RadzenCard Style="">
-            <div @onclick="() => ShowDetails(product)">
+            <div @onclick="() => NavigateToDetails(product.Id)">
                 <RadzenStack AlignItems="AlignItems.Center" Class="rz-mx-auto rz-my-12">
                     <RadzenImage Path="images/finstere_schatten.webp" Style="width: 15rem;" AlternateText="community" />
                 </RadzenStack>
@@ -39,26 +39,18 @@
     async Task LoadData(LoadDataArgs args)
     {
         isLoading = true;
-        using (var context = DbFactory.CreateDbContext())
-        {
-            var result = await context.Products.ToListAsync();
-            // Update the Data property
-            products = result.AsODataEnumerable();
-            // Update the count
-            count = result.Count;
+        using var context = DbFactory.CreateDbContext();
 
-        }
+        var result = await context.Products.ToListAsync();
+        // Update the Data property
+        products = result.AsODataEnumerable();
+        // Update the count
+        count = result.Count;
         isLoading = false;
     }
 
-    async Task ShowDetails(Product product)
+    public void NavigateToDetails(int id)
     {
-        await DialogService.OpenAsync<Details>(product.Name,
-            new Dictionary<string, object>
-                {
-                    { "Product", product }
-                },
-            new DialogOptions() { Width = "60vw", Height = "80vh", Resizable = true, Draggable = false }
-        );
+        Navigation.NavigateTo($"/products/details/{id}");
     }
 }
