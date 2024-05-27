@@ -4,53 +4,54 @@
 @inject NavigationManager Navigation
 @inject IDbContextFactory<ApplicationDbContext> DbFactory
 
-
-<RadzenDataList AllowPaging=true
-                Data="@products" TItem="Product" PageSize="5"
-                LoadData=@LoadData
-                Count=@count
-                WrapItems=true
-                PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true">
+@if (isLoading) {
+  <LoadingSkeleton />
+} else {
+  <RadzenDataList AllowPaging=true
+                  Data="@products" TItem="Product" PageSize="5"
+                  LoadData=@LoadData
+                  Count=@count
+                  WrapItems=true
+                  PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true">
     <Template Context="product">
         <RadzenCard Style="">
-            <div @onclick="() => NavigateToDetails(product.Id)">
-                <RadzenStack AlignItems="AlignItems.Center" Class="rz-mx-auto rz-my-12">
-                    <RadzenImage Path="images/finstere_schatten.webp" Style="width: 15rem;" AlternateText="community" />
-                </RadzenStack>
-                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" class="rz-color-primary">@(product.Name)</RadzenText>
-                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" Class="rz-mb-0">In Stock</RadzenText>
-                <RadzenText TextStyle="TextStyle.Body2">@(1)</RadzenText>
-            </div>
-            <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Shade="Shade.Lighter" class="price-badge"
-                         Text=@($"{String.Format(new System.Globalization.CultureInfo("en-US"), "{0:C}", product.Price)}") />
-            <RadzenButton Text="Order now" Style="width: 100%" />
-        </RadzenCard>
+        <div @onclick="() => NavigateToDetails(product.Id)">
+          <RadzenStack AlignItems="AlignItems.Center" Class="rz-mx-auto rz-my-12">
+            <RadzenImage Path="images/finstere_schatten.webp" Style="width: 15rem; border-radius: .5rem; margin: auto 0;" AlternateText="community" />
+          </RadzenStack>
+          <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" class="rz-color-primary">@(product.Name)</RadzenText>
+          <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" Class="rz-mb-0">In Stock</RadzenText>
+          <RadzenText TextStyle="TextStyle.Body2">@(1)</RadzenText>
+        </div>
+        <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Shade="Shade.Lighter" class="price-badge"
+                     Text=@($"{String.Format(new System.Globalization.CultureInfo("en-US"), "{0:C}", product.Price)}") />
+        <RadzenButton Text="Order now" Style="width: 100%" />
+      </RadzenCard>
     </Template>
-</RadzenDataList>
+  </RadzenDataList>
+}
 
 @code {
-    bool allowVirtualization;
+  bool allowVirtualization;
 
-    int count;
-    bool isLoading;
+  int count;
+  bool isLoading;
 
-    IEnumerable<Product> products;
+  IEnumerable<Product> products;
 
-    async Task LoadData(LoadDataArgs args)
-    {
-        isLoading = true;
-        using var context = DbFactory.CreateDbContext();
+  async Task LoadData(LoadDataArgs args) {
+    isLoading = true;
+    using var context = DbFactory.CreateDbContext();
 
-        var result = await context.Products.ToListAsync();
-        // Update the Data property
-        products = result.AsODataEnumerable();
-        // Update the count
-        count = result.Count;
-        isLoading = false;
-    }
+    var result = await context.Products.ToListAsync();
+    // Update the Data property
+    products = result.AsODataEnumerable();
+    // Update the count
+    count = result.Count;
+    isLoading = false;
+  }
 
-    public void NavigateToDetails(int id)
-    {
-        Navigation.NavigateTo($"/products/details/{id}");
-    }
+  public void NavigateToDetails(int id) {
+    Navigation.NavigateTo($"/products/details/{id}");
+  }
 }
