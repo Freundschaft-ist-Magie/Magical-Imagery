@@ -1,3 +1,8 @@
+:root {
+  --primary: #20B2AA;
+  --secondary: #6148B2;
+}
+
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
