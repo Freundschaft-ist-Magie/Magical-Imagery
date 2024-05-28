@@ -18,7 +18,7 @@ public class Product {
   public List<Comment>? Comments { get; set; }
 
   public List<ProductOption> Options = [
-      new ProductOption() { Id = 1, Name = "Veränderungsgarantie", Price = 25, IsChecked = false },
+    new ProductOption() { Id = 1, Name = "Veränderungsgarantie", Price = 25, IsChecked = false },
     new ProductOption() { Id = 2, Name = "Volles Urheberrecht", Price = 25, IsChecked = false },
   ];
 }
