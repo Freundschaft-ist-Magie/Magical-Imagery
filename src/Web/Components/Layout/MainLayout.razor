@@ -15,7 +15,7 @@
     <article class="content px-4">
       @if (!loading) {
         @foreach (var maintenance in Maintenances ?? new List<Maintenance>() { }) {
-          <div class="alert alert-warning" role="alert">
+          <RadzenAlert AlertStyle="AlertStyle.Warning" Variant="Variant.Flat" Shade="Shade.Light" Style="color: black;">
             <h4 class="alert-heading">@maintenance.Message</h4>
             <p><strong>Grund:</strong> @maintenance.Reason</p>
             <p><strong>Zeitspanne:</strong> @maintenance.Schedules[0].ToString("g") - @maintenance.Schedules[1].ToString("g")</p>
@@ -23,7 +23,7 @@
             <hr />
 
             <p class="mb-0">Bitte planen Sie Ihre Einkäufe entsprechend.</p>
-          </div>
+          </RadzenAlert>
         }
       }
 
