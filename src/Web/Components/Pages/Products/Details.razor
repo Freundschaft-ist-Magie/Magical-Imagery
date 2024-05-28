@@ -81,14 +81,18 @@
       </div>
 
       <div class="comments">
-        @foreach (var comment in Product.Comments) {
-          <div class="comment">
-            <img src="@comment.ProfileImage" alt="User Avatar">
-            <div class="comment-body">
-              <p><b>@comment.Author:</b></p>
-              <p>@comment.Content</p>
+        @if(Product.Comments?.Count > 0) {
+          @foreach (var comment in Product.Comments) {
+            <div class="comment">
+              <img src="@comment.ProfileImage" alt="User Avatar">
+              <div class="comment-body">
+                <p><b>@comment.Author:</b></p>
+                <p>@comment.Content</p>
+              </div>
             </div>
-          </div>
+          }
+        } else {
+          <p>Dieser Artikel hat keine Kommentare.</p>
         }
       </div>
     </div>
@@ -124,7 +128,7 @@
     bool isEdited = await DialogService.OpenAsync<Edit>($"Produkt Nr. {Product.Id}",
      new Dictionary<string, object> {
        { "Product", Product }
-       },
+     },
      new DialogOptions() { Width = "60vw", Resizable = false, Draggable = false, CloseDialogOnOverlayClick = true }
     );
 
