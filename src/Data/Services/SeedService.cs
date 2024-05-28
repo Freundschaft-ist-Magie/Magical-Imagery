@@ -16,11 +16,21 @@ public static class SeedService {
     List<Licence> licences = [
       new() {
         Id = 1,
-        Name = "MIT",
+        Name = "Persönliches Nutzungsrecht",
+        Description = "Diese Lizenz erlaubt dem Käufer, das erworbene Bild zu besitzen und für persönliche Zwecke zu verwenden. Es ist jedoch nicht gestattet, das Bild in irgendeiner Form zu reproduzieren, weiterzuverbreiten oder kommerziell zu nutzen. Das bedeutet, dass das Bild nicht zur Erzielung von Einnahmen, sei es durch Verkauf, Vermietung oder als Teil von bezahlten Inhalten oder Werbung, verwendet werden darf. Diese Lizenz eignet sich ideal für Käufer, die einzigartige Kunstwerke für ihre private Sammlung suchen, ohne die Absicht, diese kommerziell zu nutzen.",
+        ShortDescription = "Besitzt ein Bild zur privaten Nutzung ohne die Möglichkeit der Weiterverbreitung oder kommerziellen Verwendung.",
       },
       new() {
         Id = 2,
-        Name = "Non-Commercial",
+        Name = "Erweiterte Nutzungsrechte",
+        Description = "Mit dieser Lizenz erwirbt der Käufer umfassende Nutzungsrechte an dem Bild, einschließlich der Möglichkeit zur Verbreitung und Nutzung in verschiedenen Medien und Formaten. Der Käufer darf das Bild jedoch nicht direkt weiterverkaufen. Einkünfte, die indirekt durch das Bild generiert werden, wie zum Beispiel durch Abonnements einer Galerie oder als Teil von bezahlten Inhalten, erfordern die Angabe der Quelle. Diese Lizenz eignet sich für Unternehmen und Privatpersonen, die Bilder in ihrer Werbung, auf ihrer Website oder in sozialen Medien verwenden möchten, ohne sie als separate Einheiten zu verkaufen.",
+        ShortDescription = "Erweiterte Nutzung des Bildes erlaubt, inklusive Verbreitung und Einbindung in Medien, jedoch ohne direkten Weiterverkauf.",
+      },
+      new() {
+        Id = 3,
+        Name = "Vollurheberrecht (All Rights Reserved)",
+        Description = "Diese Lizenz verleiht dem Käufer volle Urheberrechte, wodurch er umfangreiche Freiheiten in der Nutzung des Bildes erhält. Der Käufer kann das Bild in jeglicher Form nutzen, weiterverbreiten und kommerziell verwerten. Es bleibt jedoch intern vermerkt, dass der Käufer das Bild vom originalen Webshop und seinen Künstlern erworben hat. Der Käufer darf das Bild nicht in einer Weise verwenden, die nach Meinung des Lizenzgebers unethisch ist.",
+        ShortDescription = "Volle Urheberrechte mit der Möglichkeit, das Bild umfassend zu nutzen und kommerziell zu verwerten, jedoch mit ethischen Einschränkungen des Lizenzgebers.",
       },
     ];
 
