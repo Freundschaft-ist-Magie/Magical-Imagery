@@ -14,10 +14,10 @@ public static class SeedService {
 
   private static async Task<List<Licence>> SeedLicences(ApplicationDbContext context) {
     List<Licence> licences = [
-        new() {
-          Id = 1,
-          Name = "MIT",
-        },
+      new() {
+        Id = 1,
+        Name = "MIT",
+      },
       new() {
         Id = 2,
         Name = "Non-Commercial",
@@ -30,14 +30,14 @@ public static class SeedService {
 
   private static async Task SeedProducts(ApplicationDbContext context, IEnumerable<Licence> licences) {
     List<Product> products = [
-        new() {
-          Id = 1,
-          Name = "Flüsternde Schatten",
-          Price = 130,
-          Width = 1920,
-          Height = 1080,
-          LicenceId = licences.First().Id,
-        },
+      new() {
+        Id = 1,
+        Name = "Flüsternde Schatten",
+        Price = 130,
+        Width = 1920,
+        Height = 1080,
+        LicenceId = licences.First().Id,
+      },
       new() {
         Id = 2,
         Name = "Ewige Dämmerung",
