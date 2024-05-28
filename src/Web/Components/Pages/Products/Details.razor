@@ -121,12 +121,15 @@
   }
 
   private async Task ShowEdit() {
-    await DialogService.OpenAsync<Edit>($"Produkt Nr. { Product.Id }",
+    bool isEdited = await DialogService.OpenAsync<Edit>($"Produkt Nr. {Product.Id}",
      new Dictionary<string, object> {
        { "Product", Product }
      },
-     new DialogOptions() { Width = "60vw", Resizable = false, Draggable = false }
+     new DialogOptions() { Width = "60vw", Resizable = false, Draggable = false, CloseDialogOnOverlayClick = true }
     );
+
+    if (isEdited)
+      StateHasChanged();
   }
 
   private void PostComment() {
