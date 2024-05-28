@@ -1,6 +1,7 @@
-﻿@using Data.Models
+﻿@inject IDbContextFactory<ApplicationDbContext> DbFactory
+@inject DialogService DialogService
+@using Data.Models
 @using Microsoft.EntityFrameworkCore
-@inject IDbContextFactory<ApplicationDbContext> DbFactory
 
 <RadzenTemplateForm TItem="Product" Data="@Product" Submit="Submit">
   <RadzenRow Gap="2rem" Class="rz-p-0 rz-p-lg-4">
@@ -82,15 +83,17 @@
             </RadzenColumn>
           </RadzenRow>
 
-          <RadzenRow AlignItems="AlignItems.Center">
-            <RadzenColumn Size="12" SizeMD="2">
-              <RadzenLabel Text="Sonstiges" />
-            </RadzenColumn>
+          @if (Product.Comments?.Count > 0) {
+            <RadzenRow AlignItems="AlignItems.Center">
+              <RadzenColumn Size="12" SizeMD="2">
+                <RadzenLabel Text="Sonstiges" />
+              </RadzenColumn>
 
-            <RadzenColumn Size="12" SizeMD="10">
-              <RadzenButton ButtonStyle="ButtonStyle.Danger" Variant="Variant.Flat" Size="ButtonSize.Small" Icon="delete" Text="Alle Kommentare löschen" Click="@DeleteComments" />
-            </RadzenColumn>
-          </RadzenRow>
+              <RadzenColumn Size="12" SizeMD="10">
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Variant="Variant.Flat" Size="ButtonSize.Small" Icon="delete" Text="Alle Kommentare löschen" Click="@DeleteComments" />
+              </RadzenColumn>
+            </RadzenRow>
+          }
 
         </RadzenStack>
       </RadzenFieldset>
@@ -119,7 +122,18 @@
     throw new NotImplementedException();
   }
 
-  void DeleteComments() {
-    throw new NotImplementedException();
+  private async Task DeleteComments() {
+    bool delete = await DialogService.OpenAsync<DeleteComments>("Alle Komentare löschen",
+     new Dictionary<string, object> {
+       { "Comments", Product.Comments }
+     },
+     new DialogOptions() { Resizable = false, Draggable = false, CloseDialogOnOverlayClick = false }
+    );
+
+    if (delete) {
+      Product.Comments.Clear();
+    }
+
+    StateHasChanged();  // This is necessary to update the UI -> delete comments btn
   }
 }

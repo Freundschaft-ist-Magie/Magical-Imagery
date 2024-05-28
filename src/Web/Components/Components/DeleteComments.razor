@@ -1,0 +1,35 @@
+﻿@inject DialogService DialogService
+@using Data.Models
+
+<RadzenCard>
+
+  <RadzenHeading Size="H3">Alle Kommentare löschen</RadzenHeading>
+  <p>Sind Sie sicher, dass Sie alle Kommentare löschen möchten?</p>
+  <p>Anzahl der Kommentare: @Comments?.Count()</p>
+
+  <hr />
+
+  <RadzenRow>
+    <RadzenColumn Size="6">
+      <RadzenButton Text="Ja" Icon="delete" ButtonStyle="ButtonStyle.Danger" Click="Submit" />
+    </RadzenColumn>
+
+    <RadzenColumn Size="6">
+      <RadzenButton Text="Nein" Icon="cancel" ButtonStyle="ButtonStyle.Secondary" Click="Cancel" />
+    </RadzenColumn>
+  </RadzenRow>
+</RadzenCard>
+
+@code {
+  [Parameter]
+  [EditorRequired]
+  public List<Comment> Comments { get; set; } = default!;
+
+  private void Submit() {
+    DialogService.Close(true);
+  }
+
+  private void Cancel() {
+    DialogService.Close(false);
+  }
+}
