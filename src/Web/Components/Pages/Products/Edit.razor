@@ -46,33 +46,7 @@
 
             <RadzenColumn Size="12" SizeMD="10">
               <RadzenStack Gap="0.5rem">
-                @foreach (var tag in Product.Tags ?? new List<string>()) {
-                  <RadzenRow AlignItems="AlignItems.Center">
-                    <RadzenColumn Size="tag == editingTag ? 9 : 10">
-                      @if (tag == editingTag) {
-                        <RadzenTextBox @bind-Value="newTagValue" Style="width: 100%;" />
-                      } else {
-                        <RadzenLabel Text="@tag" Style="width: 100%;" Name="Tag" />
-                      }
-                    </RadzenColumn>
-
-                    @if (tag == editingTag) {
-                      <RadzenColumn Size="1">
-                        <RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="save" Click="() => SaveTag()" />
-                      </RadzenColumn>
-                    }
-
-                    <RadzenColumn Size="1">
-                      <RadzenButton ButtonStyle="ButtonStyle.Secondary" Icon="edit" Click="() => EditTag(tag)" Disabled="tag == editingTag || editingTag == string.Empty" />
-                    </RadzenColumn>
-
-                    <RadzenColumn Size="1">
-                      <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Click="() => DeleteTag(tag)" />
-                    </RadzenColumn>
-                  </RadzenRow>
-                }
-
-                <RadzenButton ButtonStyle="ButtonStyle.Primary" Text="Tag hinzufügen" Click="() => EditTag(string.Empty)" Disabled="editingTag == string.Empty" />
+                <TagList Product="Product" />
               </RadzenStack>
             </RadzenColumn>
           </RadzenRow>
@@ -134,9 +108,6 @@
   [EditorRequired]
   public Product Product { get; set; } = default!;
 
-  private string? editingTag = null;
-  private string? newTagValue = null;
-
   async Task Submit() {
     using var context = await DbFactory.CreateDbContextAsync();
 
@@ -150,35 +121,5 @@
 
   void DeleteComments() {
     throw new NotImplementedException();
-  }
-
-  private void EditTag(string tag) {
-    // If the tag is empty, we are adding a new tag
-    if (string.IsNullOrEmpty(tag))
-      Product.Tags.Add(tag);
-
-    editingTag = tag;
-    newTagValue = tag;
-  }
-
-  private void DeleteTag(string tag) {
-    Product.Tags.Remove(tag);
-
-    editingTag = null;
-    newTagValue = null;
-  }
-
-  private void SaveTag() {
-    if (!string.IsNullOrEmpty(newTagValue) && editingTag != null) {
-      // Update the tag in the Product.Tags list
-      var index = Product.Tags.IndexOf(editingTag);
-      if (index != -1)
-        Product.Tags[index] = newTagValue;
-
-
-      // Reset the editing state
-      editingTag = null;
-      newTagValue = null;
-    }
   }
 }
