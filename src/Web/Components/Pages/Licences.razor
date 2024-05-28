@@ -1,0 +1,61 @@
+﻿@page "/licences"
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
+@using Data.Models
+@using Microsoft.EntityFrameworkCore
+
+@if (IsLoading) {
+  <LoadingSkeleton />
+} else {
+  <div class="header">
+    <div>
+      <h1>Lizenzinformationen</h1>
+      <h2 style="font-size: 24px;">Erfahre mehr über die verschiedenen Lizenzen...</h2>
+    </div>
+
+    <img src="./assets/licence.svg" alt="Logo" />
+  </div>
+
+  <div class="container">
+    <ul class="nav nav-tabs">
+      @foreach (var licence in LicencesList) {
+        <li class="nav-item" role="presentation">
+          <button class="nav-link custom-nav-link @(SelectedLicence == licence ? "active" : "")" type="button" @onclick="() => SelectedLicence = licence">@licence.Name</button>
+        </li>
+      }
+    </ul>
+
+    <div class="tab-content">
+      <div class="tab-pane fade show active">
+        <h2 class="mt-4">@SelectedLicence.Name</h2>
+
+        <div class="section-divider"></div>
+
+        <h3 class="section-heading">Kurzbeschreibung</h3>
+        <p>@SelectedLicence.ShortDescription</p>
+
+        <h3 class="section-heading">Ausführliche Beschreibung</h3>
+        <p>@SelectedLicence.Description</p>
+      </div>
+    </div>
+  </div>
+
+}
+
+@code {
+  public List<Licence> LicencesList { get; set; }
+  private Licence? SelectedLicence { get; set; }
+
+  private bool IsLoading { get; set; } = true;
+
+  protected override async Task OnInitializedAsync() {
+    await base.OnInitializedAsync();
+
+    using var context = await DbFactory.CreateDbContextAsync();
+
+    var licences = await context.Licences.ToListAsync();
+
+    LicencesList = licences;
+    SelectedLicence = LicencesList.First();
+    IsLoading = false;
+  }
+}
