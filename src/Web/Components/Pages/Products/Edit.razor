@@ -1,44 +1,184 @@
 ﻿@using Data.Models
 @using Microsoft.EntityFrameworkCore
 @inject IDbContextFactory<ApplicationDbContext> DbFactory
+
 <RadzenTemplateForm TItem="Product" Data="@Product" Submit="Submit">
-    <RadzenRow Gap="2rem" Class="rz-p-0 rz-p-lg-4">
-        <RadzenColumn Size="12" SizeMD="6">
-            <RadzenFieldset Text="Produkt Info">
-                <RadzenStack Gap="1rem">
-                    <RadzenRow AlignItems="AlignItems.Center">
-                        <RadzenColumn Size="12" SizeMD="4">
-                            <RadzenLabel Text="Name" Component="Name" />
-                        </RadzenColumn>
-                        <RadzenColumn Size="12" SizeMD="8">
-                            <RadzenTextBox @bind-Value="Product.Name" Style="width: 100%;" Name="Name" />
-                        </RadzenColumn>
-                    </RadzenRow>
-                </RadzenStack>
-            </RadzenFieldset>
-        </RadzenColumn>
-    </RadzenRow>
-    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1rem" Class="rz-mt-8 rz-mb-4">
-        <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.Large" Icon="save" Text="Save" />
-        <RadzenButton ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Large" Icon="cancel" Text="Cancel" Click="@Cancel" />
-    </RadzenStack>
+  <RadzenRow Gap="2rem" Class="rz-p-0 rz-p-lg-4">
+    <RadzenColumn Size="12">
+      <RadzenFieldset Text="Produkt Info">
+        <RadzenStack Gap="1rem">
+
+          <RadzenRow AlignItems="AlignItems.Center">
+            <RadzenColumn Size="12" SizeMD="2">
+              <RadzenLabel Text="Name" Component="Name" />
+            </RadzenColumn>
+
+            <RadzenColumn Size="12" SizeMD="10">
+              <RadzenTextBox @bind-Value="Product.Name" Style="width: 100%;" Name="Name" />
+            </RadzenColumn>
+          </RadzenRow>
+
+          <RadzenRow AlignItems="AlignItems.Center">
+            <RadzenColumn Size="12" SizeMD="2">
+              <RadzenLabel Text="Preis" Component="Price" />
+            </RadzenColumn>
+
+            <RadzenColumn Size="12" SizeMD="10">
+              <RadzenNumeric @bind-Value="Product.Price" Style="width: 100%;" Name="Price" />
+            </RadzenColumn>
+          </RadzenRow>
+
+          <RadzenRow AlignItems="AlignItems.Center">
+            <RadzenColumn Size="12" SizeMD="2">
+              <RadzenLabel Text="Beschreibung" Component="Description" />
+            </RadzenColumn>
+
+            <RadzenColumn Size="12" SizeMD="10">
+              <RadzenTextArea @bind-Value="Product.Description" Style="width: 100%;" Name="Description" />
+            </RadzenColumn>
+          </RadzenRow>
+
+          <RadzenRow AlignItems="AlignItems.Center">
+
+            <RadzenColumn Size="12" SizeMD="2">
+              <RadzenLabel Text="Tags" Component="Tags" />
+            </RadzenColumn>
+
+            <RadzenColumn Size="12" SizeMD="10">
+              <RadzenStack Gap="0.5rem">
+                @foreach (var tag in Product.Tags ?? new List<string>()) {
+                  <RadzenRow AlignItems="AlignItems.Center">
+                    <RadzenColumn Size="tag == editingTag ? 9 : 10">
+                      @if (tag == editingTag) {
+                        <RadzenTextBox @bind-Value="newTagValue" Style="width: 100%;" />
+                      } else {
+                        <RadzenLabel Text="@tag" Style="width: 100%;" Name="Tag" />
+                      }
+                    </RadzenColumn>
+
+                    @if (tag == editingTag) {
+                      <RadzenColumn Size="1">
+                        <RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="save" Click="() => SaveTag()" />
+                      </RadzenColumn>
+                    }
+
+                    <RadzenColumn Size="1">
+                      <RadzenButton ButtonStyle="ButtonStyle.Secondary" Icon="edit" Click="() => EditTag(tag)" Disabled="tag == editingTag || editingTag == string.Empty" />
+                    </RadzenColumn>
+
+                    <RadzenColumn Size="1">
+                      <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Click="() => DeleteTag(tag)" />
+                    </RadzenColumn>
+                  </RadzenRow>
+                }
+
+                <RadzenButton ButtonStyle="ButtonStyle.Primary" Text="Tag hinzufügen" Click="() => EditTag(string.Empty)" Disabled="editingTag == string.Empty" />
+              </RadzenStack>
+            </RadzenColumn>
+          </RadzenRow>
+
+          <RadzenRow AlignItems="AlignItems.Center">
+            <RadzenColumn Size="12" SizeMD="2">
+              <RadzenLabel Text="Breite (in px)" Component="Width" />
+            </RadzenColumn>
+
+            <RadzenColumn Size="12" SizeMD="10">
+              <RadzenNumeric @bind-Value="Product.Width" Style="width: 100%;" Name="Width" />
+            </RadzenColumn>
+          </RadzenRow>
+
+          <RadzenRow AlignItems="AlignItems.Center">
+            <RadzenColumn Size="12" SizeMD="2">
+              <RadzenLabel Text="Höhe (in px)" Component="Height" />
+            </RadzenColumn>
+
+            <RadzenColumn Size="12" SizeMD="10">
+              <RadzenNumeric @bind-Value="Product.Height" Style="width: 100%;" Name="Height" />
+            </RadzenColumn>
+          </RadzenRow>
+
+          <RadzenRow AlignItems="AlignItems.Center">
+            <RadzenColumn Size="12" SizeMD="2">
+              <RadzenLabel Text="Bild" Component="Image" />
+            </RadzenColumn>
+
+            <RadzenColumn Size="12" SizeMD="10">
+              <RadzenTextBox @bind-Value="Product.Image" Style="width: 100%;" Name="Image" />
+              <RadzenImage Path="@Product.Image" Style="width: 100px; height: auto; margin-top: 1rem;" />
+            </RadzenColumn>
+          </RadzenRow>
+
+          <RadzenRow AlignItems="AlignItems.Center">
+            <RadzenColumn Size="12" SizeMD="2">
+              <RadzenLabel Text="Sonstiges" />
+            </RadzenColumn>
+
+            <RadzenColumn Size="12" SizeMD="10">
+              <RadzenButton ButtonStyle="ButtonStyle.Danger" Variant="Variant.Flat" Size="ButtonSize.Small" Icon="delete" Text="Alle Kommentare löschen" Click="@DeleteComments" />
+            </RadzenColumn>
+          </RadzenRow>
+
+        </RadzenStack>
+      </RadzenFieldset>
+    </RadzenColumn>
+  </RadzenRow>
+
+  <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1rem" Class="rz-mt-8 rz-mb-4">
+    <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.Large" Icon="save" Text="Speichern" />
+    <RadzenButton ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Large" Icon="cancel" Text="Abbrechen" Click="@Cancel" />
+  </RadzenStack>
 </RadzenTemplateForm>
 
 @code {
-    [Parameter]
-    [EditorRequired]
-    public Product Product { get; set; } = default!;
+  [Parameter]
+  [EditorRequired]
+  public Product Product { get; set; } = default!;
 
-    async Task Submit()
-    {
-        using var context = await DbFactory.CreateDbContextAsync();
+  private string? editingTag = null;
+  private string? newTagValue = null;
 
-        await context.AddAsync(Product);
-        await context.SaveChangesAsync();
+  async Task Submit() {
+    using var context = await DbFactory.CreateDbContextAsync();
+
+    await context.AddAsync(Product);
+    await context.SaveChangesAsync();
+  }
+
+  void Cancel() {
+    throw new NotImplementedException();
+  }
+
+  void DeleteComments() {
+    throw new NotImplementedException();
+  }
+
+  private void EditTag(string tag) {
+    // If the tag is empty, we are adding a new tag
+    if (string.IsNullOrEmpty(tag))
+      Product.Tags.Add(tag);
+
+    editingTag = tag;
+    newTagValue = tag;
+  }
+
+  private void DeleteTag(string tag) {
+    Product.Tags.Remove(tag);
+
+    editingTag = null;
+    newTagValue = null;
+  }
+
+  private void SaveTag() {
+    if (!string.IsNullOrEmpty(newTagValue) && editingTag != null) {
+      // Update the tag in the Product.Tags list
+      var index = Product.Tags.IndexOf(editingTag);
+      if (index != -1)
+        Product.Tags[index] = newTagValue;
+
+
+      // Reset the editing state
+      editingTag = null;
+      newTagValue = null;
     }
-
-    void Cancel()
-    {
-        
-    }
+  }
 }

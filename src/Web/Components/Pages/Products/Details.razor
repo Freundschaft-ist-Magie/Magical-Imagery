@@ -16,7 +16,9 @@
       <div class="col-md-6">
         <img src="@(Product.Image)" alt="Produktbild" class="product-image">
 
-        <buton class="btn btn-info d-flex justify-content-center my-2">Produkt bearbeiten</buton>
+        <div class="d-flex justify-content-center my-2">
+          <RadzenButton ButtonStyle="ButtonStyle.Secondary" Click="ShowEdit">Bearbeiten</RadzenButton>
+        </div>
       </div>
       <div class="col-md-6">
         <div class="product-details">
@@ -33,7 +35,7 @@
           <div class="technical-description">
             <h3>Technische Beschreibung</h3>
             <ul>
-              @foreach (var tag in Product.Tags) {
+              @foreach (var tag in Product.Tags ?? new List<string>()) {
                 <li>@tag</li>
               }
               <li>@Product.Pixel</li>
@@ -118,16 +120,25 @@
     IsLoading = false;
   }
 
+  private async Task ShowEdit() {
+    await DialogService.OpenAsync<Edit>($"Produkt Nr. { Product.Id }",
+     new Dictionary<string, object> {
+       { "Product", Product }
+     },
+     new DialogOptions() { Width = "60vw", Resizable = false, Draggable = false }
+    );
+  }
+
   private void PostComment() {
     if (string.IsNullOrWhiteSpace(CommentText)) {
       return;
     }
 
     Product.Comments?.Add(new Comment() {
-      Author = "Anonymous",
-      Content = CommentText,
-      ProfileImage = "https://picsum.photos/40/40"
-    });
+        Author = "Anonymous",
+        Content = CommentText,
+        ProfileImage = "https://picsum.photos/40/40"
+      });
   }
 
   private void RecalcPrice(uint modificator, bool isChecked) {
@@ -142,7 +153,7 @@
         Image = "./Images/finstere_schatten.webp",
         Price = 130,
         Description = "Tauchen Sie ein in die geheimnisvolle Welt der \"Flüsternden Schatten\". Dieses Kunstwerk entführt Sie in einen mystischen Wald, in dem das Licht zauberhafte Schatten wirft und eine atemberaubende Atmosphäre schafft. Ein Meisterwerk, das in jedem Raum eine besondere Stimmung verbreitet.",
-        Tags = ["Fanart", "Originalcharakter", "Umgebung"],
+        Tags = new List<string>() { "Fanart", "Originalcharakter", "Umgebung" },
         Comments = new List<Comment> {
         new Comment {
           Id = 1,
@@ -157,6 +168,6 @@
           ProfileImage = "https://picsum.photos/40/40"
         }
       }
-      };
+    };
   }
 }
