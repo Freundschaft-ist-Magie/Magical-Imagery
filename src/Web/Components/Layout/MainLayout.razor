@@ -11,9 +11,6 @@
 
   <main>
     <RadzenDialog />
-    <div class="top-row px-4">
-      <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-    </div>
 
     <article class="content px-4">
       @if (!loading) {
@@ -22,9 +19,9 @@
             <h4 class="alert-heading">@maintenance.Message</h4>
             <p><strong>Grund:</strong> @maintenance.Reason</p>
             <p><strong>Zeitspanne:</strong> @maintenance.Schedules[0].ToString("g") - @maintenance.Schedules[1].ToString("g")</p>
-            
+
             <hr />
-            
+
             <p class="mb-0">Bitte planen Sie Ihre Einkäufe entsprechend.</p>
           </div>
         }
