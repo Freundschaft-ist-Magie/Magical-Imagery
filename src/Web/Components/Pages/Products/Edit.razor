@@ -130,10 +130,11 @@
      new DialogOptions() { Resizable = false, Draggable = false, CloseDialogOnOverlayClick = false }
     );
 
-    if (delete) {
+    if (delete)
       Product.Comments.Clear();
     }
 
-    StateHasChanged();  // This is necessary to update the UI -> delete comments btn
+    // This is necessary to update the UI -> delete comments btn
+    StateHasChanged();
   }
 }
