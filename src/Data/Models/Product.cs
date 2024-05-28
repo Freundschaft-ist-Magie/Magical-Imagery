@@ -7,7 +7,7 @@ public class Product {
   public string Name { get; set; } = string.Empty;
   public string? Image { get; set; }
   public string? Description { get; set; }
-  public string[]? Tags { get; set; }
+  public List<string>? Tags { get; set; }
   public uint Price { get; set; }
   public string? Category { get; set; }
   public int Width { get; set; }
