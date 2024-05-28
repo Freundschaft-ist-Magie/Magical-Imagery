@@ -9,5 +9,6 @@ namespace Data
         public DbSet<Product> Products { get; set; }
         public DbSet<Licence> Licences { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<Maintenance> Maintenances { get; set; }
     }
 }
