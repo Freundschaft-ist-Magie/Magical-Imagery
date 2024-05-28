@@ -112,7 +112,7 @@ namespace Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comments", (string)null);
                 });
 
             modelBuilder.Entity("Data.Models.Licence", b =>
@@ -129,7 +129,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Licences");
+                    b.ToTable("Licences", (string)null);
                 });
 
             modelBuilder.Entity("Data.Models.Maintenance", b =>
@@ -154,7 +154,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Maintenances");
+                    b.ToTable("Maintenances", (string)null);
                 });
 
             modelBuilder.Entity("Data.Models.Product", b =>
@@ -197,7 +197,7 @@ namespace Data.Migrations
 
                     b.HasIndex("LicenceId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
