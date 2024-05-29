@@ -7,7 +7,8 @@ public static class SeedService {
       return;
 
     var licences = await SeedLicences(context);
-    await SeedProducts(context, licences);
+    var comments = await SeedComments(context);
+    await SeedProducts(context, licences, comments);
     await SeedMaintances(context);
     await context.SaveChangesAsync();
   }
@@ -38,24 +39,91 @@ public static class SeedService {
     return licences;
   }
 
-  private static async Task SeedProducts(ApplicationDbContext context, IEnumerable<Licence> licences) {
+  private static async Task<List<Comment>> SeedComments(ApplicationDbContext context) {
+    List<Comment> comments = [
+      new() {
+        Id = 1,
+        Author = "Max Mustermann",
+        Content = "Ein wirklich beeindruckendes Kunstwerk! Die Farben und die Details sind einfach atemberaubend.",
+        ProfileImage = "https://loremflickr.com/40/40/dog"
+      },
+      new() {
+        Id = 2,
+        Author = "Erika Mustermann",
+        Content = "Ich liebe dieses Bild! Es passt perfekt in mein Wohnzimmer und verleiht dem Raum eine ganz besondere Atmosphäre.",
+        ProfileImage = "https://loremflickr.com/40/40/cat"
+      },
+      new() {
+        Id = 3,
+        Author = "John Doe",
+        Content = "Fantastisches Kunstwerk! Ich bin begeistert von der Detailgenauigkeit und der Farbgebung.",
+        ProfileImage = "https://loremflickr.com/40/40/paris"
+      },
+      new () {
+        Id = 4,
+        Author = "Jane Doe",
+        Content = "Die Farben und Schattierungen sind einfach wunderschön! Ein echter Blickfang in jedem Raum.",
+        ProfileImage = "https://loremflickr.com/40/40/berlin"
+      },
+      new () {
+        Id = 5,
+        Author = "Kevin Müller",
+        Content = "Ein echtes Meisterstück der Kunst! Die Kombination aus Licht und Schatten ist einfach faszinierend.",
+        ProfileImage = "https://loremflickr.com/40/40/london"
+      },
+      new () {
+        Id = 6,
+        Author = "Laura Schmidt",
+        Content = "Ein wunderschönes Bild! Die Farben und die Stimmung sind einfach einzigartig.",
+        ProfileImage = "https://loremflickr.com/40/40/girl"
+      }
+    ];
+
+    await context.AddRangeAsync(comments);
+    return comments;
+  }
+
+  private static async Task SeedProducts(ApplicationDbContext context, IEnumerable<Licence> licences, IEnumerable<Comment> comments) {
     List<Product> products = [
       new() {
         Id = 1,
         Name = "Flüsternde Schatten",
-        Price = 130,
-        Width = 1920,
-        Height = 1080,
+        Image = "./Images/finstere_schatten.webp",
+        Description = "Tauchen Sie ein in die geheimnisvolle Welt der \"Flüsternden Schatten\". Dieses Kunstwerk entführt Sie in einen mystischen Wald, in dem das Licht zauberhafte Schatten wirft und eine atemberaubende Atmosphäre schafft. Ein Meisterwerk, das in jedem Raum eine besondere Stimmung verbreitet.",
+        Tags = ["Wald", "Schatten", "Mystisch"],
+        Price = 60,
+        Format = Enums.ImageFormat.Square,
+        Width = 1024,
+        Height = 1024,
         LicenceId = licences.First().Id,
+        Comments = comments.Take(2).ToList()
       },
       new() {
         Id = 2,
-        Name = "Ewige Dämmerung",
-        Price = 60,
-        Width = 1920,
-        Height = 1080,
-        LicenceId = licences.Last().Id,
+        Name = "Evertale",
+        Image = "./Images/evertale.webp",
+        Description = "Das Kunstwerk \"Evertale\" entführt Sie in eine Welt voller Magie und Abenteuer. Lassen Sie sich von den leuchtenden Farben und den detailreichen Motiven verzaubern und tauchen Sie ein in eine Welt voller Geheimnisse und Wunder.",
+        Tags = ["Fantasy", "Magie", "Abenteuer"],
+        Price = 130,
+        Format = Enums.ImageFormat.Landscape,
+        Width = 1792,
+        Height = 1024,
+        LicenceId = licences.Skip(1).First().Id,
+        Comments = comments.Skip(2).Take(2).ToList()
       },
+      new() {
+        Id = 3,
+        Name = "Wächter der Wüstenwelten",
+        Image = "./Images/guardian.jpg",
+        Description = "Ein mächtiger Echsenkrieger steht inmitten einer weiten Wüstenlandschaft, seine muskulöse Gestalt strahlt Stärke und Entschlossenheit aus. Mit prachtvollen Schmuckstücken und einem imposanten, königlichen Gewand ausgestattet, verkörpert er die majestätische Herrschaft über sein Reich. Sein Blick ist stolz und wachsam, bereit, sein Land gegen jegliche Bedrohung zu verteidigen.",
+        Tags = ["Wüste", "Echse", "Krieger", "Fantasy"],
+        Price = 25,
+        Format = Enums.ImageFormat.Portrait,
+        Width = 512,
+        Height = 768,
+        LicenceId = licences.Last().Id,
+        Comments = comments.Skip(4).Take(2).ToList()
+      }
     ];
 
     await context.AddRangeAsync(products);
