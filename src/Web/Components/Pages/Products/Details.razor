@@ -158,9 +158,4 @@
     context.Products.Update(Product);
     await context.SaveChangesAsync();
   }
-
-  private void RecalcPrice(uint modificator, bool isChecked) {
-    int priceChange = isChecked ? -(int)modificator : +(int)modificator;
-    Product.Price += (uint)priceChange;
-  }
 }
