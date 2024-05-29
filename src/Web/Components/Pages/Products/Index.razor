@@ -23,7 +23,7 @@
           <div class="col-12 col-md-6 col-lg-4">
             <div @onclick="() => NavigateToDetails(product.Id)" class="product">
 
-              <img src="@product.Image" alt="Product Image" />
+              <img src="@product.Image" alt="Product Image von @product.Name" />
 
               <h3 class="my-2">
                 @product.Name
@@ -40,8 +40,8 @@
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M21,15a2,2,0,0,1-2,2H7l-4,4V5A2,2,0,0,1,5,3H19a2,2,0,0,1,2,2Z" fill="#000000" />
                   </svg>
-
                 </span>
+
                 <span class="likes">
                   <span class="mx-1">
                     @product.Likes

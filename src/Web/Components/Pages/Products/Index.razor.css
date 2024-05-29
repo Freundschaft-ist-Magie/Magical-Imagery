@@ -33,9 +33,10 @@
 }
 
   .product img {
-    max-width: 100%;
-    height: auto;
+    width: 352px;
+    height: 352px;
     border-radius: .25rem;
+    object-fit: cover;
   }
 
   .product .price {
