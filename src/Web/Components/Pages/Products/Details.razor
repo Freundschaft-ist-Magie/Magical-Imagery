@@ -58,7 +58,7 @@
               <p>@Product.Licence.ShortDescription</p>
 
               <p>
-                Die komplette Beschreibung zu den Lizenzen ist auf der <NavLink href="licences">Lizenz Seite</NavLink> zu finden.
+                Die komplette Beschreibung zu den Lizenzen ist auf der <NavLink href="@("licences/" + Product.LicenceId)">Lizenz Seite</NavLink> zu finden.
               </p>
             } else {
               <p>Keine Lizenzinformationen verfügbar.</p>

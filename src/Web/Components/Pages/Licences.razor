@@ -1,4 +1,4 @@
-﻿@page "/licences"
+﻿@page "/licences/{id:int?}"
 @inject IDbContextFactory<ApplicationDbContext> DbFactory
 @using Data.Models
 @using Microsoft.EntityFrameworkCore
@@ -42,6 +42,9 @@
 }
 
 @code {
+  [Parameter]
+  public int? Id { get; set; }
+
   public List<Licence> LicencesList { get; set; }
   private Licence? SelectedLicence { get; set; }
 
@@ -55,7 +58,12 @@
     var licences = await context.Licences.ToListAsync();
 
     LicencesList = licences;
-    SelectedLicence = LicencesList.First();
+
+    if (Id != null)
+      SelectedLicence = LicencesList.FirstOrDefault(l => l.Id == Id);
+    else
+      SelectedLicence = LicencesList.First();
+
     IsLoading = false;
   }
 }
