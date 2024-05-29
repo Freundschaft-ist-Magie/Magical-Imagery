@@ -140,6 +140,9 @@
     IsLoading = false;
   }
 
+  /// <summary>
+  /// Toggles the like state of the product and saves it to the database.
+  /// </summary>
   private async Task ToggleLike() {
     IsLiked = !IsLiked;
 
@@ -195,6 +198,10 @@
     await context.SaveChangesAsync();
   }
 
+  /// <summary>
+  /// Updates the given product in the database.
+  /// </summary>
+  /// <param name="product">The product to update.</param>
   private async Task UpdateProduct(Product product) {
     using var context = await DbFactory.CreateDbContextAsync();
 

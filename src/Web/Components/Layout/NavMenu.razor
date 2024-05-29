@@ -103,6 +103,10 @@
     NavigationManager.LocationChanged -= OnLocationChanged;
   }
 
+  /// <summary>
+  /// Opens the dialog to add a new product.<br />
+  /// It uses the <see cref="Edit"/> component to create a new product.
+  /// </summary>
   private async Task OpenAddProduct() {
     Product product = new Product();
 
@@ -115,6 +119,11 @@
     );
   }
 
+  /// <summary>
+  /// Helper method for the <see cref="OpenAddProduct"/> method.<br />
+  /// Adds the product to the database.
+  /// </summary>
+  /// <param name="product">The product to add</param>
   private async Task AddProduct(Product product) {
     using var context = await DbFactory.CreateDbContextAsync();
 
