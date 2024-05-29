@@ -139,16 +139,24 @@
       StateHasChanged();
   }
 
-  private void PostComment() {
+  private async Task PostComment() {
     if (string.IsNullOrWhiteSpace(CommentText)) {
       return;
     }
 
     Product.Comments?.Add(new Comment() {
-        Author = "Anonymous",
+        Author = "Anonymous", // Anonymous, beacuse we don't have a user system yet
         Content = CommentText,
         ProfileImage = "https://picsum.photos/40/40"
-      });
+    });
+
+    CommentText = string.Empty;
+
+    // save comment to database
+    using var context = await DbFactory.CreateDbContextAsync();
+
+    context.Products.Update(Product);
+    await context.SaveChangesAsync();
   }
 
   private void RecalcPrice(uint modificator, bool isChecked) {
