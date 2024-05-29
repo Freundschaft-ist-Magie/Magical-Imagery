@@ -36,29 +36,43 @@
   private string? editingTag = null;
   private string? newTagValue = null;
 
+  /// <summary>
+  /// edit a tag in the product's tags list
+  /// <param name="tag">value of tag</param>
+  /// </summary>
   private void EditTag(string tag) {
     // If the tag is empty, we are adding a new tag
     if (string.IsNullOrEmpty(tag))
       Product.Tags.Add(tag);
 
+    // Set the editing state with the provided tag
     editingTag = tag;
     newTagValue = tag;
   }
 
+  /// <summary>
+  /// delete a tag from the product's tags list
+  /// <param name="tag">value of tag</param>
+  /// </summary>
   private void DeleteTag(string tag) {
     Product.Tags.Remove(tag);
 
+    // Reset the editing state
     editingTag = null;
     newTagValue = null;
   }
 
+  /// <summary>
+  /// save the edited tag in the product's tags list
+  /// </summary>
   private void SaveTag() {
+    // Check if the new tag has a value, to prevent UI Bugs 
     if (!string.IsNullOrEmpty(newTagValue) && editingTag != null) {
-      // Update the tag in the Product.Tags list
       var index = Product.Tags.IndexOf(editingTag);
+      
+      // If the tag exists in the list, update it with the new value
       if (index != -1)
         Product.Tags[index] = newTagValue;
-
 
       // Reset the editing state
       editingTag = null;

@@ -127,6 +127,9 @@
     IsLoading = false;
   }
 
+  /// <summary>
+  /// Opens a dialog to edit the product and re-renders the component if the Product was edited.
+  /// </summary>
   private async Task ShowEdit() {
     bool isEdited = await DialogService.OpenAsync<Edit>($"Produkt Nr. {Product.Id}",
      new Dictionary<string, object> {
@@ -139,6 +142,9 @@
       StateHasChanged();
   }
 
+  /// <summary>
+  /// Posts a comment to the product.
+  /// </summary>
   private async Task PostComment() {
     if (string.IsNullOrWhiteSpace(CommentText)) {
       return;

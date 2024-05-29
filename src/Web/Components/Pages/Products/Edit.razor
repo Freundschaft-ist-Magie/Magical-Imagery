@@ -111,6 +111,9 @@
   [EditorRequired]
   public Product Product { get; set; } = default!;
 
+  /// <summary>
+  /// Updates the product in the database and closes the dialog with a true result, which indicates that the product was updated.
+  /// </summary>
   async Task Submit() {
     using var context = await DbFactory.CreateDbContextAsync();
 
@@ -120,10 +123,16 @@
     DialogService.Close(true);
   }
 
+  /// <summary>
+  /// Closes the dialog with a false result, which indicates that the product was not updated.
+  /// </summary>
   void Cancel() {
     DialogService.Close(false);
   }
 
+  /// <summary>
+  /// Deletes all comments of the product.
+  /// </summary>
   private async Task DeleteComments() {
     bool delete = await DialogService.OpenAsync<DeleteComments>("Alle Komentare löschen",
      new Dictionary<string, object> {
