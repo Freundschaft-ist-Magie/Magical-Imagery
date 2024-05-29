@@ -51,6 +51,9 @@
             <h3>Lizenz</h3>
 
             @if (@Product.Licence != null) {
+              <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H4" Style="font-width: bold;">
+                @Product.Licence.Name
+              </RadzenText>
 
               <p>@Product.Licence.ShortDescription</p>
 
