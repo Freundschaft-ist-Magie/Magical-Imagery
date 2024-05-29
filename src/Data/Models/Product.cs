@@ -10,6 +10,7 @@ public class Product {
   public string? Description { get; set; }
   public List<string>? Tags { get; set; }
   public uint Price { get; set; }
+  public uint Likes { get; set; } = 0;
   public ImageFormat Format { get; set; }
   public string? Category { get; set; }
   public int Width { get; set; }

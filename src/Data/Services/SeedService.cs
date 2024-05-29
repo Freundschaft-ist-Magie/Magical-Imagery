@@ -92,11 +92,12 @@ public static class SeedService {
         Description = "Tauchen Sie ein in die geheimnisvolle Welt der \"Flüsternden Schatten\". Dieses Kunstwerk entführt Sie in einen mystischen Wald, in dem das Licht zauberhafte Schatten wirft und eine atemberaubende Atmosphäre schafft. Ein Meisterwerk, das in jedem Raum eine besondere Stimmung verbreitet.",
         Tags = ["Wald", "Schatten", "Mystisch"],
         Price = 60,
+        Likes = 5,
         Format = Enums.ImageFormat.Square,
         Width = 1024,
         Height = 1024,
         LicenceId = licences.First().Id,
-        Comments = comments.Take(2).ToList()
+        Comments = comments.Take(1).ToList()
       },
       new() {
         Id = 2,
@@ -105,11 +106,12 @@ public static class SeedService {
         Description = "Das Kunstwerk \"Evertale\" entführt Sie in eine Welt voller Magie und Abenteuer. Lassen Sie sich von den leuchtenden Farben und den detailreichen Motiven verzaubern und tauchen Sie ein in eine Welt voller Geheimnisse und Wunder.",
         Tags = ["Fantasy", "Magie", "Abenteuer"],
         Price = 130,
+        Likes = 45,
         Format = Enums.ImageFormat.Landscape,
         Width = 1792,
         Height = 1024,
         LicenceId = licences.Skip(1).First().Id,
-        Comments = comments.Skip(2).Take(2).ToList()
+        Comments = comments.Skip(1).Take(3).ToList()
       },
       new() {
         Id = 3,
@@ -118,6 +120,7 @@ public static class SeedService {
         Description = "Ein mächtiger Echsenkrieger steht inmitten einer weiten Wüstenlandschaft, seine muskulöse Gestalt strahlt Stärke und Entschlossenheit aus. Mit prachtvollen Schmuckstücken und einem imposanten, königlichen Gewand ausgestattet, verkörpert er die majestätische Herrschaft über sein Reich. Sein Blick ist stolz und wachsam, bereit, sein Land gegen jegliche Bedrohung zu verteidigen.",
         Tags = ["Wüste", "Echse", "Krieger", "Fantasy"],
         Price = 25,
+        Likes = 12,
         Format = Enums.ImageFormat.Portrait,
         Width = 512,
         Height = 768,
