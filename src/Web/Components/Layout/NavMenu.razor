@@ -1,6 +1,10 @@
 ﻿@implements IDisposable
-
 @inject NavigationManager NavigationManager
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
+@inject DialogService DialogService
+@using Data.Models
+@using Microsoft.EntityFrameworkCore
+@using Web.Components.Pages.Products
 
 <div class="top-row ps-3 navbar navbar-dark">
   <div class="container-fluid">
@@ -14,8 +18,18 @@
   <nav class="flex-column">
     <div class="nav-item px-3">
       <NavLink class="nav-link" href="products">
-        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Produkte
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bag-plus" aria-hidden="true" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" d="M8 7.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0v-1.5H6a.5.5 0 0 1 0-1h1.5V8a.5.5 0 0 1 .5-.5" />
+          <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1m3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z" />
+        </svg>
+        Produkte
       </NavLink>
+    </div>
+
+    <div class="nav-item px-3">
+      <button class="nav-link" @onclick=OpenAddProduct>
+        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Produkt erstellen
+      </button>
     </div>
 
     <div class="nav-item px-3">
@@ -87,6 +101,29 @@
 
   public void Dispose() {
     NavigationManager.LocationChanged -= OnLocationChanged;
+  }
+
+  private async Task OpenAddProduct() {
+    Product product = new Product();
+
+    await DialogService.OpenAsync<Edit>($"Produkt erstellen",
+     new Dictionary<string, object> {
+       { "Product", product },
+       { "OnSubmit", EventCallback.Factory.Create(this, () => AddProduct(product))}
+     },
+     new DialogOptions() { Width = "60vw", Resizable = false, Draggable = false, CloseDialogOnOverlayClick = true }
+    );
+  }
+
+  private async Task AddProduct(Product product) {
+    using var context = await DbFactory.CreateDbContextAsync();
+
+    // prevent sql duplicate key exception, because the licence is already in the database
+    product.LicenceId = product.Licence.Id;
+    product.Licence = null;
+
+    context.Products.Add(product);
+    await context.SaveChangesAsync();
   }
 }
 
