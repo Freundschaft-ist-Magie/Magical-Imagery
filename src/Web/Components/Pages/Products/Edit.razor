@@ -136,7 +136,7 @@
   private async Task DeleteComments() {
     bool delete = await DialogService.OpenAsync<DeleteComments>("Alle Komentare löschen",
      new Dictionary<string, object> {
-       { "Comments", Product.Comments }
+       { "Comments", Product.Comments } // comments cannot be null, because the button is only visible if there are comments
      },
      new DialogOptions() { Resizable = false, Draggable = false, CloseDialogOnOverlayClick = false }
     );
