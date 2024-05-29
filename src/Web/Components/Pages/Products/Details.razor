@@ -120,7 +120,7 @@
       return;
     }
 
-    Product = MockProduct();
+    Product = product;
     IsLoading = false;
   }
 
@@ -151,35 +151,5 @@
   private void RecalcPrice(uint modificator, bool isChecked) {
     int priceChange = isChecked ? -(int)modificator : +(int)modificator;
     Product.Price += (uint)priceChange;
-  }
-
-  private Product MockProduct() {
-    return new Product {
-      Id = 1,
-      Name = "Flüsternde Schatten",
-      Image = "./Images/finstere_schatten.webp",
-      Price = 130,
-      Description = "Tauchen Sie ein in die geheimnisvolle Welt der \"Flüsternden Schatten\". Dieses Kunstwerk entführt Sie in einen mystischen Wald, in dem das Licht zauberhafte Schatten wirft und eine atemberaubende Atmosphäre schafft. Ein Meisterwerk, das in jedem Raum eine besondere Stimmung verbreitet.",
-      Tags = new List<string>() { "Fanart", "Originalcharakter", "Umgebung" },
-      LicenceId = 1,
-      Licence = new Licence {
-        Id = 1,
-        Name = "Standard",
-      },
-      Comments = new List<Comment> {
-        new Comment {
-          Id = 1,
-          Author = "Hoshiro",
-          Content = "Great work!",
-          ProfileImage = "https://picsum.photos/40/40"
-        },
-        new Comment {
-          Id = 2,
-          Author = "ThatMicrowave",
-          Content = "Amazing work, and was very cooperative! Would recommend ^^",
-          ProfileImage = "https://picsum.photos/40/40"
-        }
-      }
-    };
   }
 }
