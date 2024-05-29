@@ -22,9 +22,9 @@ services:
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     environment:
-      PMA_HOST: db                        
-      PMA_USER: user                      
-      PMA_PASSWORD: userpassword          
+      PMA_HOST: db
+      PMA_USER: magical
+      PMA_PASSWORD: magical123   
     ports:
       - "8080:80"                         
     restart: always
