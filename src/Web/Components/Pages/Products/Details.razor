@@ -131,7 +131,8 @@
   /// Opens a dialog to edit the product and re-renders the component if the Product was edited.
   /// </summary>
   private async Task ShowEdit() {
-    bool isEdited = await DialogService.OpenAsync<Edit>($"Produkt Nr. {Product.Id}",
+    // must be nullable, because the dialog can return null if it is closed with the x-button instead of the cancel button
+    bool? isEdited = await DialogService.OpenAsync<Edit>($"Produkt Nr. {Product.Id}",
      new Dictionary<string, object> {
        { "Product", Product },
        { "OnSubmit", EventCallback.Factory.Create(this, () => UpdateProduct(Product))}
@@ -139,7 +140,8 @@
      new DialogOptions() { Width = "60vw", Resizable = false, Draggable = false, CloseDialogOnOverlayClick = true }
     );
 
-    if (isEdited)
+    // must be written like this, because nullable bool can't be compared to false directly
+    if (isEdited ?? false)
       StateHasChanged();
   }
 
