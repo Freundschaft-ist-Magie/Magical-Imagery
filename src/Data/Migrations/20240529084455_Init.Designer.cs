@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240527122639_Comments")]
-    partial class Comments
+    [Migration("20240529084455_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -126,13 +126,46 @@ namespace Data.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ShortDescription")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
-                    b.ToTable("licences");
+                    b.ToTable("Licences");
+                });
+
+            modelBuilder.Entity("Data.Models.Maintenance", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Schedules")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Maintenances");
                 });
 
             modelBuilder.Entity("Data.Models.Product", b =>
@@ -149,6 +182,9 @@ namespace Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
 
+                    b.Property<int>("Format")
+                        .HasColumnType("int");
+
                     b.Property<int>("Height")
                         .HasColumnType("int");
 
@@ -157,6 +193,9 @@ namespace Data.Migrations
 
                     b.Property<int>("LicenceId")
                         .HasColumnType("int");
+
+                    b.Property<uint>("Likes")
+                        .HasColumnType("int unsigned");
 
                     b.Property<string>("Name")
                         .IsRequired()
