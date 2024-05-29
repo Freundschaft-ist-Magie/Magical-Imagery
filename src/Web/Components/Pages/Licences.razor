@@ -19,7 +19,7 @@
     <ul class="nav nav-tabs">
       @foreach (var licence in LicencesList) {
         <li class="nav-item" role="presentation">
-          <button class="nav-link custom-nav-link @(SelectedLicence == licence ? "active" : "")" type="button" @onclick="() => SelectedLicence = licence">@licence.Name</button>
+          <button class="nav-link custom-nav-link @(SelectedLicence == licence ? "active" : "")" type="button" @onclick="() => SelectLicence(licence)">@licence.Name</button>
         </li>
       }
     </ul>
@@ -65,5 +65,9 @@
       SelectedLicence = LicencesList.First();
 
     IsLoading = false;
+  }
+
+  private async Task SelectLicence(Licence licence) {
+    SelectedLicence = licence;
   }
 }
