@@ -8,7 +8,7 @@ public class Product {
   public string Name { get; set; } = string.Empty;
   public string? Image { get; set; }
   public string? Description { get; set; }
-  public List<string>? Tags { get; set; }
+  public List<string> Tags { get; set; } = [];
   public uint Price { get; set; }
   public uint Likes { get; set; } = 0;
   public ImageFormat Format { get; set; }

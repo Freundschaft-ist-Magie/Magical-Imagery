@@ -1,6 +1,6 @@
 ﻿@using Data.Models
 
-@foreach (var tag in Product.Tags ?? new List<string>()) {
+@foreach (var tag in Product.Tags) {
   <RadzenRow AlignItems="AlignItems.Center">
     <RadzenColumn Size="tag == editingTag ? 9 : 10">
       @if (tag == editingTag) {

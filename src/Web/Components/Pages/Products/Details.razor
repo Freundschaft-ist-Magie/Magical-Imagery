@@ -35,7 +35,7 @@
           <div class="technical-description">
             <h3>Technische Beschreibung</h3>
             <ul>
-              @foreach (var tag in Product.Tags ?? new List<string>()) {
+              @foreach (var tag in Product.Tags) {
                 <li>@tag</li>
               }
               <li>@Product.Pixel</li>
