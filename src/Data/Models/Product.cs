@@ -1,4 +1,5 @@
 ﻿using Data.Entity;
+using Data.Enums;
 
 namespace Data.Models;
 
@@ -9,6 +10,7 @@ public class Product {
   public string? Description { get; set; }
   public List<string>? Tags { get; set; }
   public uint Price { get; set; }
+  public ImageFormat Format { get; set; }
   public string? Category { get; set; }
   public int Width { get; set; }
   public int Height { get; set; }
