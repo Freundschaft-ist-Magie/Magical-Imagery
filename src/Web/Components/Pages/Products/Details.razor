@@ -116,7 +116,7 @@
   protected override async Task OnInitializedAsync() {
     using var context = await DbFactory.CreateDbContextAsync();
 
-    var product = await context.Products.FirstOrDefaultAsync(p => p.Id == Id);
+    var product = await context.Products.Include(p => p.Comments).Include(p => p.Licence).FirstOrDefaultAsync(p => p.Id == Id);
 
     if (product == null) {
       ErrorMessage = "Das Produkt konnte nicht gefunden werden.";

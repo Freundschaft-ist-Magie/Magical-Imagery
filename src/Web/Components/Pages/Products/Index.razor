@@ -73,7 +73,7 @@
     isLoading = true;
     using var context = DbFactory.CreateDbContext();
 
-    products = await context.Products.ToListAsync();
+    products = await context.Products.Include(p => p.Comments).ToListAsync();
 
     // Update the count
     count = products.Count();
