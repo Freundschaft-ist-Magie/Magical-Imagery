@@ -48,21 +48,21 @@
           </div>
 
           <div class="option-table">
-            <h3>Zusätzliche Optionen</h3>
+            <h3>Lizenz</h3>
 
-            <table class="table">
-              <tbody>
-                @foreach (var option in Product.Options) {
-                  <tr>
-                    <td>
-                      <input type="checkbox" @bind-value=option.IsChecked @onclick="() => RecalcPrice(option.Price, option.IsChecked)">
-                      <span>@option.Name</span>
-                    </td>
-                    <td>CHF @option.Price</td>
-                  </tr>
-                }
-              </tbody>
-            </table>
+            @if (@Product.Licence != null) {
+
+              <p>@Product.Licence.ShortDescription</p>
+
+              <p>
+                Die komplette Beschreibung zu den Lizenzen ist auf der <NavLink href="licences">Lizenz Seite</NavLink> zu finden.
+              </p>
+            } else {
+              <p>Keine Lizenzinformationen verfügbar.</p>
+              <RadzenAlert AlertStyle="AlertStyle.Danger" Variant="Variant.Flat" Shade="Shade.Dark">
+                  Dies bedeutet nicht, dass dieses Produkt frei von Rechten ist. Bitte kontaktieren Sie uns für weitere Informationen.
+              </RadzenAlert>
+            }
           </div>
 
           <button class="btn btn-primary btn-buy">In den Warenkorb</button>
