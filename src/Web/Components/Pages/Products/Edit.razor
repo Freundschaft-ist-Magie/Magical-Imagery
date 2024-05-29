@@ -83,6 +83,16 @@
             </RadzenColumn>
           </RadzenRow>
 
+          <RadzenRow AlignItems="AlignItems.Center">
+            <RadzenColumn Size="12" SizeMD="2">
+              <RadzenLabel Text="Lizenz" Component="Licence" />
+            </RadzenColumn>
+
+            <RadzenColumn Size="12" SizeMD="10">
+              <RadzenDropDown @bind-Value=@Product.Licence Data=@Licences TextProperty="Name" Style="width: 100%;" Name="Licence" />
+            </RadzenColumn>
+          </RadzenRow>
+
           @if (Product.Comments?.Count > 0) {
             <RadzenRow AlignItems="AlignItems.Center">
               <RadzenColumn Size="12" SizeMD="2">
@@ -114,6 +124,16 @@
   [Parameter]
   [EditorRequired]
   public EventCallback OnSubmit { get; set; }
+
+  private List<Licence> Licences { get; set; }
+
+  protected override async Task OnInitializedAsync() {
+    await base.OnInitializedAsync();
+
+    using var context = await DbFactory.CreateDbContextAsync();
+
+    Licences = await context.Licences.ToListAsync();
+  }
 
   /// <summary>
   /// Updates the product in the database and closes the dialog with a true result, which indicates that the product was updated.
