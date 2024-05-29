@@ -111,15 +111,15 @@
   [EditorRequired]
   public Product Product { get; set; } = default!;
 
+  [Parameter]
+  [EditorRequired]
+  public EventCallback OnSubmit { get; set; }
+
   /// <summary>
   /// Updates the product in the database and closes the dialog with a true result, which indicates that the product was updated.
   /// </summary>
   async Task Submit() {
-    using var context = await DbFactory.CreateDbContextAsync();
-
-    context.Products.Update(Product);
-    await context.SaveChangesAsync();
-
+    await OnSubmit.InvokeAsync();
     DialogService.Close(true);
   }
 
