@@ -14,10 +14,22 @@
   <div class="container p-0">
     <div class="row">
       <div class="col-md-6">
-        <img src="@(Product.Image)" alt="Produktbild" class="product-image">
+        <div class="d-flex justify-content-center">
+          <img src="@(Product.Image)" alt="Produktbild" class="product-image">
+        </div>
 
-        <div class="d-flex justify-content-center my-2">
-          <RadzenButton ButtonStyle="ButtonStyle.Secondary" Click="ShowEdit">Bearbeiten</RadzenButton>
+        <div class="d-flex flex-column align-content-center justify-content-center my-2">
+          <RadzenButton Variant="!IsLiked ? Variant.Outlined : Variant.Filled"
+                        Click=ToggleLike ButtonStyle="ButtonStyle.Info" Style="width: fit-content; margin: 0.5rem auto;">
+            @Product.Likes
+            <svg width="20" height="20" style="margin-bottom: 2px;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#000000" />
+            </svg>
+          </RadzenButton>
+
+          <RadzenButton ButtonStyle="ButtonStyle.Secondary" Click="ShowEdit" Style="width: fit-content; margin: auto;">
+            Bearbeiten
+          </RadzenButton>
         </div>
       </div>
       <div class="col-md-6">
@@ -63,7 +75,7 @@
             } else {
               <p>Keine Lizenzinformationen verfügbar.</p>
               <RadzenAlert AlertStyle="AlertStyle.Danger" Variant="Variant.Flat" Shade="Shade.Dark">
-                  Dies bedeutet nicht, dass dieses Produkt frei von Rechten ist. Bitte kontaktieren Sie uns für weitere Informationen.
+                Dies bedeutet nicht, dass dieses Produkt frei von Rechten ist. Bitte kontaktieren Sie uns für weitere Informationen.
               </RadzenAlert>
             }
           </div>
@@ -84,7 +96,7 @@
       </div>
 
       <div class="comments">
-        @if(Product.Comments?.Count > 0) {
+        @if (Product.Comments?.Count > 0) {
           @foreach (var comment in Product.Comments) {
             <div class="comment">
               <img src="@comment.ProfileImage" alt="User Avatar">
@@ -112,6 +124,7 @@
 
   public string ErrorMessage = string.Empty;
   private bool IsLoading = true;
+  private bool IsLiked = false;
 
   protected override async Task OnInitializedAsync() {
     using var context = await DbFactory.CreateDbContextAsync();
@@ -127,6 +140,20 @@
     IsLoading = false;
   }
 
+  private async Task ToggleLike() {
+    IsLiked = !IsLiked;
+
+    using var context = await DbFactory.CreateDbContextAsync();
+
+    if (IsLiked) Product.Likes++;
+    else {
+      if (Product.Likes > 0) Product.Likes--;
+    }
+
+    context.Products.Update(Product);
+    await context.SaveChangesAsync();
+  }
+
   /// <summary>
   /// Opens a dialog to edit the product and re-renders the component if the Product was edited.
   /// </summary>
@@ -136,7 +163,7 @@
      new Dictionary<string, object> {
        { "Product", Product },
        { "OnSubmit", EventCallback.Factory.Create(this, () => UpdateProduct(Product))}
-     },
+       },
      new DialogOptions() { Width = "60vw", Resizable = false, Draggable = false, CloseDialogOnOverlayClick = true }
     );
 
@@ -157,7 +184,7 @@
         Author = "Anonymous", // Anonymous, beacuse we don't have a user system yet
         Content = CommentText,
         ProfileImage = "https://picsum.photos/40/40"
-    });
+      });
 
     CommentText = string.Empty;
 
