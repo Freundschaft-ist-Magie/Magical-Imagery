@@ -1,0 +1,45 @@
+﻿<div class="cart-item">
+	<div class="item-image">
+		<img src="https://via.placeholder.com/80" alt="Product Image">
+		<div class="item-sale">
+			<i>-20 %</i>
+		</div>
+	</div>
+	<div class="item-details">
+		<h3 class="item-name">@Product.Name</h3>
+		<h4 class="item-description text-muted">@Product.Description</h4>
+	</div>
+	<div class="item-price">
+		<div class="quantity-controls">
+			<button>
+				<svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<rect x="3" y="9" width="18" height="6" fill="black" />
+				</svg>
+			</button>
+			<input type="text" value="2">
+			<button>
+				<svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<rect x="9" y="3" width="6" height="18" fill="black" />
+					<rect x="3" y="9" width="18" height="6" fill="black" />
+				</svg>
+			</button>
+		</div>
+		<div class="price">
+			<p class="price-original">19 CHF</p>
+			<p>@Product.Price CHF</p>
+		</div>
+	</div>
+	<button class="remove-btn">
+		<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="15" height="15">
+			<line y1="10" y2="90" stroke="black" x1="10" x2="90" stroke-width="10"></line>
+			<line x1="90" y1="10" x2="10" y2="90" stroke="black" stroke-width="10"></line>
+		</svg>
+	</button>
+</div>
+
+@code {
+	[Parameter]
+	[EditorRequired]
+	public Product Product { get; set; }
+
+}

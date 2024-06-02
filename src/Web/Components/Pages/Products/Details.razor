@@ -1,8 +1,10 @@
 ﻿@page "/products/details/{id:int}"
 @inject IDbContextFactory<ApplicationDbContext> DbFactory
 @inject DialogService DialogService
+@inject ShoppingCartService ShoppingCartService
 @using Data.Models
 @using Microsoft.EntityFrameworkCore
+@using Web.Service
 
 @if (!string.IsNullOrWhiteSpace(ErrorMessage)) {
   <div class="alert alert-danger" role="alert">
@@ -80,7 +82,7 @@
             }
           </div>
 
-          <button class="btn btn-primary btn-buy">In den Warenkorb</button>
+          <button @onclick="AddToCart" class="btn btn-primary btn-buy">In den Warenkorb</button>
         </div>
       </div>
     </div>
@@ -115,30 +117,35 @@
 }
 
 @code {
-  [Parameter]
-  public int Id { get; set; }
+    [Parameter]
+    public int Id { get; set; }
 
-  public Product Product { get; set; }
+    public Product Product { get; set; }
 
-  private string CommentText { get; set; } = string.Empty;
+    private string CommentText { get; set; } = string.Empty;
 
-  public string ErrorMessage = string.Empty;
-  private bool IsLoading = true;
-  private bool IsLiked = false;
+    public string ErrorMessage = string.Empty;
+    private bool IsLoading = true;
+    private bool IsLiked = false;
 
-  protected override async Task OnInitializedAsync() {
-    using var context = await DbFactory.CreateDbContextAsync();
+    protected override async Task OnInitializedAsync() {
+        using var context = await DbFactory.CreateDbContextAsync();
 
-    var product = await context.Products.Include(p => p.Comments).Include(p => p.Licence).FirstOrDefaultAsync(p => p.Id == Id);
+        var product = await context.Products.Include(p => p.Comments).Include(p => p.Licence).FirstOrDefaultAsync(p => p.Id == Id);
 
-    if (product == null) {
-      ErrorMessage = "Das Produkt konnte nicht gefunden werden.";
-      return;
+        if (product == null) {
+            ErrorMessage = "Das Produkt konnte nicht gefunden werden.";
+            return;
+        }
+
+        Product = product;
+        IsLoading = false;
     }
 
-    Product = product;
-    IsLoading = false;
-  }
+    private void AddToCart()
+    {
+        ShoppingCartService.AddProductToCart(Product);
+    }
 
   /// <summary>
   /// Toggles the like state of the product and saves it to the database.
