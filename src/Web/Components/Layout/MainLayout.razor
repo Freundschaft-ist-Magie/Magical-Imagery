@@ -1,7 +1,10 @@
 ﻿@inherits LayoutComponentBase
 @using Data.Models
 @using Microsoft.EntityFrameworkCore
+@using Web.Service
 @inject IDbContextFactory<ApplicationDbContext> DbFactory
+@inject ShoppingCartService ShoppingCartService
+@inject NavigationManager Navigation
 
 
 <RadzenDialog />
@@ -10,6 +13,10 @@
 		<RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0">
 			<RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)" />
 			<RadzenLabel Text="Magical Imagery" />
+			<div style="position:absolute; right:10px;" role="button" @onclick="NavigateToCart">
+				<RadzenIcon Icon="credit_card" />
+				<RadzenLabel  Text="@($"Zum Warenkorb {itemsInCard}")"  />
+			</div>
 		</RadzenStack>
 	</RadzenHeader>
 	<RadzenSidebar Responsive="false" @bind-Expanded="@sidebarExpanded" style="position: absolute">
@@ -49,8 +56,14 @@
 @code {
 	private List<Maintenance>? Maintenances { get; set; }
 	bool sidebarExpanded = false;
+	private int itemsInCard => ShoppingCartService.Products.Count;
 
 	private bool loading = true;
+
+	private void NavigateToCart()
+	{
+		Navigation.NavigateTo("checkout");
+	}
 
 	protected override async Task OnInitializedAsync()
 	{
