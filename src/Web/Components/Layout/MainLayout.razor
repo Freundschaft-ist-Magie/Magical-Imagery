@@ -4,58 +4,68 @@
 @inject IDbContextFactory<ApplicationDbContext> DbFactory
 
 
-<div class="page">
-  <div class="sidebar">
-    <NavMenu />
-  </div>
+<RadzenDialog />
+<RadzenLayout style="position: relative">
+	<RadzenHeader>
+		<RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0">
+			<RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)" />
+			<RadzenLabel Text="Magical Imagery" />
+		</RadzenStack>
+	</RadzenHeader>
+	<RadzenSidebar Responsive="false" @bind-Expanded="@sidebarExpanded" style="position: absolute">
+		<RadzenPanelMenu>
+			<NavMenu />
+		</RadzenPanelMenu>
+		<div class="rz-p-4">
+			Sidebar
+		</div>
+	</RadzenSidebar>
+	<RadzenBody>
+		<div class="rz-p-4">
+			@if (!loading)
+			{
+				@foreach (var maintenance in Maintenances ?? new List<Maintenance>() { })
+				{
+					<RadzenAlert AlertStyle="AlertStyle.Warning" Variant="Variant.Flat" Shade="Shade.Light" Style="color: black;">
+						<h4 class="alert-heading">@maintenance.Message</h4>
+						<p><strong>Grund:</strong> @maintenance.Reason</p>
+						<p><strong>Zeitspanne:</strong> @maintenance.Schedules[0].ToString("g") - @maintenance.Schedules[1].ToString("g")</p>
 
-  <main>
-    <RadzenDialog />
+						<hr />
 
-    <article class="content px-4">
-      @if (!loading) {
-        @foreach (var maintenance in Maintenances ?? new List<Maintenance>() { }) {
-          <RadzenAlert AlertStyle="AlertStyle.Warning" Variant="Variant.Flat" Shade="Shade.Light" Style="color: black;">
-            <h4 class="alert-heading">@maintenance.Message</h4>
-            <p><strong>Grund:</strong> @maintenance.Reason</p>
-            <p><strong>Zeitspanne:</strong> @maintenance.Schedules[0].ToString("g") - @maintenance.Schedules[1].ToString("g")</p>
+						<p class="mb-0">Bitte planen Sie Ihre Einkäufe entsprechend.</p>
+					</RadzenAlert>
+				}
+			}
 
-            <hr />
-
-            <p class="mb-0">Bitte planen Sie Ihre Einkäufe entsprechend.</p>
-          </RadzenAlert>
-        }
-      }
-
-      @Body
-    </article>
-  </main>
-</div>
-
-<div id="blazor-error-ui">
-  An unhandled error has occurred.
-  <a href="" class="reload">Reload</a>
-  <a class="dismiss">🗙</a>
-</div>
+			@Body
+		</div>
+	</RadzenBody>
+	<RadzenFooter>
+		Footer
+	</RadzenFooter>
+</RadzenLayout>
 
 @code {
-  private List<Maintenance>? Maintenances { get; set; }
+	private List<Maintenance>? Maintenances { get; set; }
+	bool sidebarExpanded = false;
 
-  private bool loading = true;
+	private bool loading = true;
 
-  protected override async Task OnInitializedAsync() {
-    await base.OnInitializedAsync();
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
 
-    using var context = await DbFactory.CreateDbContextAsync();
+		using var context = await DbFactory.CreateDbContextAsync();
 
-    // get all maintenances within 10 days from now
-    var maintenances = context.Maintenances
-      .ToList() // load in memory to use C# methods in SQL-Query
-      .Where(m => m.Schedules[0] <= DateTime.Now.AddDays(10))
-      .OrderBy(m => m.Schedules[0])
-      .ToList();
+		// get all maintenances within 10 days from now
+		var maintenances = context.Maintenances
+				.ToList() // load in memory to use C# methods in SQL-Query
+				.Where(m => m.Schedules[0] <= DateTime.Now.AddDays(10))
+				.OrderBy(m => m.Schedules[0])
+				.ToList();
 
-    Maintenances = maintenances;
-    loading = false;
-  }
+		Maintenances = maintenances;
+		loading = false;
+	}
 }
