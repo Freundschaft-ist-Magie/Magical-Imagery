@@ -2,6 +2,7 @@
 @inject IDbContextFactory<ApplicationDbContext> DbFactory
 @inject DialogService DialogService
 @inject ShoppingCartService ShoppingCartService
+@inject NavigationManager Navigation
 @using Data.Models
 @using Microsoft.EntityFrameworkCore
 @using Web.Service
@@ -145,6 +146,7 @@
     private void AddToCart()
     {
         ShoppingCartService.AddProductToCart(Product);
+        Navigation.NavigateTo("/");
     }
 
   /// <summary>
