@@ -36,9 +36,9 @@
     {
 		    <div class="divider-strong" style="margin: 2rem 0;"></div>
 
-		    <div class="apply-discount">
-        <input @bind-value="discountCode" type="text" placeholder="Rabatt-Code" disabled="@(discount != 0)" />
-        <button @onclick=submitDiscountCode class="btn btn-primary" disabled="@(discount != 0)">Anwenden</button>
+        <div class="apply-discount input-group">
+          <input @bind-value="discountCode" class="form-control" type="text" placeholder="Rabatt-Code" disabled="@(discount != 0)" />
+          <button @onclick=submitDiscountCode class="btn btn-primary" disabled="@(discount != 0)">Anwenden</button>
 		    </div>
 
 		    <div style="margin: 1rem 0;">
