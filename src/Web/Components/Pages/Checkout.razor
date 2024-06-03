@@ -32,31 +32,36 @@
 			<ProductCard Product="item" />
 		}
 
-		<div class="divider-strong" style="margin: 2rem 0;"></div>
+    @if(products.Count != 0)
+    {
+		    <div class="divider-strong" style="margin: 2rem 0;"></div>
 
-		<div class="apply-discount">
-			<input type="text" placeholder="Rabatt-Code">
-			<button class="btn btn-primary">Anwenden</button>
-		</div>
+		    <div class="apply-discount">
+        <input @bind-value="discountCode" type="text" placeholder="Rabatt-Code" disabled="@(discount != 0)" />
+        <button @onclick=submitDiscountCode class="btn btn-primary" disabled="@(discount != 0)">Anwenden</button>
+		    </div>
 
-		<div style="margin: 1rem 0;">
-			<div class="subtotal">
-				<p>Zwischensumme: @total CHF</p>
-			</div>
+		    <div style="margin: 1rem 0;">
+			    <div class="subtotal">
+            <p>Zwischensumme: @DisplayPriceAsCurrency(total)</p>
+			    </div>
 
-			<div class="discount text-muted">
-				<p>Rabatt: 5 CHF</p>
-			</div>
-		</div>
+			    <div class="discount text-muted">
+            <p>Rabatt: @DisplayPriceAsCurrency(discount)</p>
+			    </div>
+		    </div>
 
-		<div class="divider-strong"></div>
+		    <div class="divider-strong"></div>
 
-		<div class="total">
-			<p>Gesamt: @CalulateDiscount() CHF</p>
-		</div>
+		    <div class="total">
+			    <p>Gesamt: @CalulateDiscount() CHF</p>
+		    </div>
 
-		<button @onclick=NavigateToPay class="btn btn-success px-5 py-2" style="display: flex; margin-left: auto;">Bezahlen</button>
-	</div>
+      <button @onclick=NavigateToPay class="btn btn-success px-5 py-2" style="display: flex; margin-left: auto;">Bezahlen</button>
+    } else {
+      <p>Der Warenkorb ist leer.</p>
+    }
+  </div>
 }
 else
 {
@@ -65,21 +70,39 @@ else
 
 
 @code {
-	bool pageLoaded = false;
-	private List<Product> products => ShoppingCartService.Products;
-	private int total => ShoppingCartService.Total;
-	private int discount = 5;
+  bool pageLoaded = false;
+  private List<Product> products => ShoppingCartService.Products;
+  private int total => ShoppingCartService.Total;
+  private byte discount = 0;
+  private string discountCode = "";
 
-	private void NavigateToPay()
-	{
-		Navigation.NavigateTo("/pay");
-	}
+  private void NavigateToPay()
+  {
+    Navigation.NavigateTo("/pay");
+  }
 
-	private int CalulateDiscount()
-	{
-		var result = total - discount;
-		return result < 0 ? 0 : result;
-	}
+  private int CalulateDiscount()
+  {
+    var result = total - discount;
+    return result < 0 ? 0 : result;
+  }
+
+  /// <summary>
+  /// Displays the price as currency. Only supportes CHF.
+  /// </summary>
+  /// <param name="price"> The price to display. </param>
+  /// <returns> currency string </returns>
+  private string DisplayPriceAsCurrency(int price) {
+    return String.Format(new System.Globalization.CultureInfo("de-CH"), "{0:C}", price);
+  }
+
+  /// <summary>
+  /// Submits the discount code and sets the discount if the code is valid.
+  /// </summary>
+  private void submitDiscountCode()
+  {
+    if (discountCode == "M306") discount = 10;
+  }
 
 	protected override async Task OnInitializedAsync()
 	{
