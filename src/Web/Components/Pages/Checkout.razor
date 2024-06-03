@@ -71,10 +71,18 @@ else
 
 @code {
   bool pageLoaded = false;
-  private List<Product> products => ShoppingCartService.Products;
+  private List<Product> products;
   private int total => ShoppingCartService.Total;
   private byte discount = 0;
   private string discountCode = "";
+
+  protected override async Task OnInitializedAsync()
+  {
+    await base.OnInitializedAsync();
+    products = ShoppingCartService.Products;
+
+    pageLoaded = true;
+  }
 
   private void NavigateToPay()
   {
@@ -103,9 +111,4 @@ else
   {
     if (discountCode == "M306") discount = 10;
   }
-
-	protected override async Task OnInitializedAsync()
-	{
-		pageLoaded = true;
-	}
 }
