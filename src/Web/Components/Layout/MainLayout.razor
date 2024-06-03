@@ -12,11 +12,14 @@
 	<RadzenHeader>
 		<RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0">
 			<RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)" />
-			<RadzenLabel Text="Magical Imagery" />
-			<div style="position:absolute; right:10px;" role="button" @onclick="NavigateToCart">
-				<RadzenIcon Icon="credit_card" />
-				<RadzenLabel  Text="@($"Zum Warenkorb {itemsInCard}")"  />
-			</div>
+      <div class="w-100 mx-3 d-flex justify-content-between align-items-center align-content-center">
+			  <RadzenLabel Text="Magical Imagery" />
+
+			  <div class="d-flex gap-2" role="button" @onclick="NavigateToCart">
+				  <RadzenIcon Icon="credit_card" />
+				  <RadzenLabel  Text="@($"Zum Warenkorb: { itemsInCard }")" />
+        </div>
+      </div>
 		</RadzenStack>
 	</RadzenHeader>
 	<RadzenSidebar Responsive="false" @bind-Expanded="@sidebarExpanded" style="position: absolute">
