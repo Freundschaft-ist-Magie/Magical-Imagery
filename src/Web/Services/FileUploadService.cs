@@ -16,9 +16,11 @@ public class FileUploadService(IWebHostEnvironment environment) {
     return $"/Images/{fileName}";
   }
 
-  public bool DeleteFile(string completePath) {
-    if (File.Exists(completePath)) {
-      File.Delete(completePath);
+  public bool DeleteFile(string fileName) {
+    string fullPath = Path.Combine(_environment.WebRootPath, fileName.TrimStart('/'));
+
+    if (File.Exists(fullPath)) {
+      File.Delete(fullPath);
       return true;
     }
 
