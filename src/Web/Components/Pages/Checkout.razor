@@ -72,7 +72,7 @@ else
 @code {
   bool pageLoaded = false;
   private List<Product> products;
-  private int total => ShoppingCartService.Total;
+  private decimal total;
   private byte discount = 0;
   private string discountCode = "";
 
@@ -80,6 +80,7 @@ else
   {
     await base.OnInitializedAsync();
     products = ShoppingCartService.Products;
+    total = ShoppingCartService.Total;
 
     pageLoaded = true;
   }
@@ -89,7 +90,7 @@ else
     Navigation.NavigateTo("/pay");
   }
 
-  private int CalulateDiscount()
+  private decimal CalulateDiscount()
   {
     var result = total - discount;
     return result < 0 ? 0 : result;
@@ -100,7 +101,7 @@ else
   /// </summary>
   /// <param name="price"> The price to display. </param>
   /// <returns> currency string </returns>
-  private string DisplayPriceAsCurrency(int price) {
+  private string DisplayPriceAsCurrency(decimal price) {
     return String.Format(new System.Globalization.CultureInfo("de-CH"), "{0:C}", price);
   }
 
