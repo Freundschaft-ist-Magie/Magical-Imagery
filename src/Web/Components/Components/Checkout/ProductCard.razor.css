@@ -97,6 +97,10 @@
   text-align: center;
 }
 
+.price p {
+  margin-bottom: 0;
+}
+
 .price-original {
   text-decoration: line-through;
   color: #ccc;
