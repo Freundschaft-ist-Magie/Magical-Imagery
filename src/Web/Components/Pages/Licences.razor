@@ -6,16 +6,12 @@
 @if (IsLoading) {
   <LoadingSkeleton />
 } else {
-  <div class="header">
-    <div>
-      <h1>Lizenzinformationen</h1>
-      <h2 style="font-size: 24px;">Erfahre mehr über die verschiedenen Lizenzen...</h2>
-    </div>
+  <HeroBanner MainTitle="Lizenzinformationen"
+              SubTitle="Erfahre mehr über die verschiedenen Lizenzen..."
+              Image="./assets/licence.svg"
+              />
 
-    <img src="./assets/licence.svg" alt="Logo" />
-  </div>
-
-  <div class="container">
+  <div class="container mt-3">
     <ul class="nav nav-tabs">
       @foreach (var licence in LicencesList) {
         <li class="nav-item" role="presentation">

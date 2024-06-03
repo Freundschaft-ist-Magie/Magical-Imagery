@@ -1,0 +1,17 @@
+﻿<div class="header">
+  <div>
+    <h1>@MainTitle</h1>
+    <h2 style="font-size: 24px;">@SubTitle</h2>
+  </div>
+
+  <img src=@Image alt="Logo" />
+</div>
+
+@code {
+  [Parameter]
+  public string MainTitle { get; set; } = default!;
+  [Parameter]
+  public string SubTitle { get; set; } = default!;
+  [Parameter]
+  public string Image { get; set; } = default!;
+}

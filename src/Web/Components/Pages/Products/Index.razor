@@ -7,14 +7,10 @@
 @if (isLoading) {
   <LoadingSkeleton />
 } else {
-  <div class="header">
-    <div>
-      <h1>Kunst wie von Zauberhand</h1>
-      <h2 style="font-size: 24px;">Entdecke neue Kunstwerke...</h2>
-    </div>
-
-    <img src="./assets/logo.svg" alt="Logo" />
-  </div>
+  <HeroBanner MainTitle="Kunst wie von Zauberhand"
+              SubTitle="Entdecke neue Kunstwerke..."
+              Image="./assets/logo.svg"
+              />
 
   <div class="container my-5 p-0">
     <div class="col-12">
