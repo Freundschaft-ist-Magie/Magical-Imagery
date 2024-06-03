@@ -1,5 +1,5 @@
 ﻿namespace Web.Services;
-public class FileUploadService(IWebHostEnvironment environment) {
+public class FileService(IWebHostEnvironment environment) {
   private readonly IWebHostEnvironment _environment = environment;
 
   public async Task<string> UploadFileAsync(Stream stream, string fileName) {

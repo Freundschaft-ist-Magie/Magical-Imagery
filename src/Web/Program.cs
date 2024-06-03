@@ -24,7 +24,7 @@ builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 builder.Services.AddScoped<DialogService>();
 builder.Services.AddSingleton<ShoppingCartService>();
-builder.Services.AddSingleton<FileUploadService>();
+builder.Services.AddSingleton<FileService>();
 
 builder.Services.AddAuthentication(options =>
     {
