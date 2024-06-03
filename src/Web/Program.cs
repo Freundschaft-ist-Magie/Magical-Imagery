@@ -8,7 +8,7 @@ using Radzen;
 using System.Data;
 using Web.Components;
 using Web.Components.Account;
-using Web.Service;
+using Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
