@@ -1,7 +1,11 @@
 ﻿@inject IDbContextFactory<ApplicationDbContext> DbFactory
 @inject DialogService DialogService
+@inject FileUploadService FileUploadService
+@inject IJSRuntime JSRuntime
 @using Data.Models
 @using Microsoft.EntityFrameworkCore
+@using Web.Services
+@using Microsoft.JSInterop
 
 <RadzenTemplateForm TItem="Product" Data="@Product" Submit="Submit">
   <RadzenRow Gap="2rem" Class="rz-p-0 rz-p-lg-4">
@@ -78,8 +82,22 @@
             </RadzenColumn>
 
             <RadzenColumn Size="12" SizeMD="10">
-              <RadzenTextBox @bind-Value="Product.Image" Style="width: 100%;" Name="Image" />
-              <RadzenImage Path="@Product.Image" Style="width: 100px; height: auto; margin-top: 1rem;" />
+              <RadzenImage Path="@(!string.IsNullOrEmpty(tempImage) ? tempImage : Product.Image)"
+                           Style="width: 100px; height: auto; margin-top: 1rem;" />
+
+              <p style="margin-bottom: 0; margin-top: .5rem;">
+                Neues Bild hochladen.
+              </p>
+              <RadzenUpload Multiple="false" Accept="image" ChooseText="Bild auswählen"
+                            Style="width: 100%;" Name="Image Save"
+                            Change=@OnClientChange
+                            Progress="@((args) => OnProgress(args, "Images only upload"))" />
+
+              @if (progress > 0) {
+                <RadzenProgressBar @bind-Value=progress ProgressBarStyle="ProgressBarStyle.Primary"
+                                   ShowValue="false" Style="width: 100%;" />
+              }
+
             </RadzenColumn>
           </RadzenRow>
 
@@ -116,6 +134,18 @@
   </RadzenStack>
 </RadzenTemplateForm>
 
+<script>
+  function onRemoveImage(dotnetHelper) {
+    var element = document.getElementsByClassName('rz-button rz-button-icon-only')[2];
+
+    if (element) {
+      element.addEventListener('click', () => {
+        dotnetHelper.invokeMethodAsync('OnRemoveImage');
+      });
+    }
+  }
+</script>
+
 @code {
   [Parameter]
   [EditorRequired]
@@ -126,6 +156,9 @@
   public EventCallback OnSubmit { get; set; }
 
   private List<Licence> Licences { get; set; }
+
+  private double progress;
+  private string? tempImage;
 
   protected override async Task OnInitializedAsync() {
     await base.OnInitializedAsync();
@@ -140,7 +173,10 @@
   /// </summary>
   async Task Submit() {
     await OnSubmit.InvokeAsync();
-    DialogService.Close(true);
+    if (!string.IsNullOrEmpty(tempImage))
+      Product.Image = tempImage;
+    
+      DialogService.Close(true);
   }
 
   /// <summary>
@@ -148,6 +184,36 @@
   /// </summary>
   void Cancel() {
     DialogService.Close(false);
+  }
+
+  [JSInvokable]
+  public void OnRemoveImage() {
+    FileUploadService.DeleteFile(tempImage);
+    tempImage = null;
+    StateHasChanged();
+  }
+
+  private void OnProgress(UploadProgressArgs args, string message) {
+    progress = args.Progress;
+  }
+
+  private async Task OnClientChange(UploadChangeEventArgs args) {
+    foreach (var file in args.Files) {
+      try {
+        long maxFileSize = 10 * 1024 * 1024;
+        // read file
+        var stream = file.OpenReadStream(maxFileSize);
+
+        var fileName = file.Name;
+        // save file in temp variable, so the original wont be overwritten on cancel
+        tempImage = await FileUploadService.UploadFileAsync(stream, fileName);
+        stream.Close();
+
+        await JSRuntime.InvokeVoidAsync("onRemoveImage", DotNetObjectReference.Create(this));
+      } catch (Exception ex) {
+        throw new Exception("Client-side file read error", ex);
+      }
+    }
   }
 
   /// <summary>
