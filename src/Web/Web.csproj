@@ -32,6 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Backups\" />
     <Folder Include="wwwroot\Images\" />
   </ItemGroup>
 
