@@ -2,26 +2,23 @@
 using Microsoft.EntityFrameworkCore;
 
 namespace Data.Services;
-public static class SeedService
-{
-    public static async Task SeedDb(this ApplicationDbContext context)
-    {
-        context.Database.Migrate();
+public static class SeedService {
+  public static async Task SeedDb(this ApplicationDbContext context) {
+    context.Database.Migrate();
 
-        if (context.Products.Any())
-            return;
+    if (context.Products.Any())
+      return;
 
-        var licences = await SeedLicences(context);
-        var comments = await SeedComments(context);
-        await SeedProducts(context, licences, comments);
-        await SeedMaintances(context);
-        await context.SaveChangesAsync();
-    }
+    var licences = await SeedLicences(context);
+    var comments = await SeedComments(context);
+    await SeedProducts(context, licences, comments);
+    await SeedMaintances(context);
+    await context.SaveChangesAsync();
+  }
 
-    private static async Task<List<Licence>> SeedLicences(ApplicationDbContext context)
-    {
-        List<Licence> licences = [
-          new() {
+  private static async Task<List<Licence>> SeedLicences(ApplicationDbContext context) {
+    List<Licence> licences = [
+      new() {
         Id = 1,
         Name = "Persönliches Nutzungsrecht",
         Description = "Diese Lizenz erlaubt dem Käufer, das erworbene Bild zu besitzen und für persönliche Zwecke zu verwenden. Es ist jedoch nicht gestattet, das Bild in irgendeiner Form zu reproduzieren, weiterzuverbreiten oder kommerziell zu nutzen. Das bedeutet, dass das Bild nicht zur Erzielung von Einnahmen, sei es durch Verkauf, Vermietung oder als Teil von bezahlten Inhalten oder Werbung, verwendet werden darf. Diese Lizenz eignet sich ideal für Käufer, die einzigartige Kunstwerke für ihre private Sammlung suchen, ohne die Absicht, diese kommerziell zu nutzen.",
@@ -41,14 +38,13 @@ public static class SeedService
       },
     ];
 
-        await context.AddRangeAsync(licences);
-        return licences;
-    }
+    await context.AddRangeAsync(licences);
+    return licences;
+  }
 
-    private static async Task<List<Comment>> SeedComments(ApplicationDbContext context)
-    {
-        List<Comment> comments = [
-          new() {
+  private static async Task<List<Comment>> SeedComments(ApplicationDbContext context) {
+    List<Comment> comments = [
+      new() {
         Id = 1,
         Author = "Max Mustermann",
         Content = "Ein wirklich beeindruckendes Kunstwerk! Die Farben und die Details sind einfach atemberaubend.",
@@ -66,34 +62,33 @@ public static class SeedService
         Content = "Fantastisches Kunstwerk! Ich bin begeistert von der Detailgenauigkeit und der Farbgebung.",
         ProfileImage = "https://loremflickr.com/40/40/paris"
       },
-      new () {
+      new() {
         Id = 4,
         Author = "Jane Doe",
         Content = "Die Farben und Schattierungen sind einfach wunderschön! Ein echter Blickfang in jedem Raum.",
         ProfileImage = "https://loremflickr.com/40/40/berlin"
       },
-      new () {
+      new() {
         Id = 5,
         Author = "Kevin Müller",
         Content = "Ein echtes Meisterstück der Kunst! Die Kombination aus Licht und Schatten ist einfach faszinierend.",
         ProfileImage = "https://loremflickr.com/40/40/london"
       },
-      new () {
+      new() {
         Id = 6,
         Author = "Laura Schmidt",
         Content = "Ein wunderschönes Bild! Die Farben und die Stimmung sind einfach einzigartig.",
         ProfileImage = "https://loremflickr.com/40/40/girl"
       }
-        ];
+    ];
 
-        await context.AddRangeAsync(comments);
-        return comments;
-    }
+    await context.AddRangeAsync(comments);
+    return comments;
+  }
 
-    private static async Task SeedProducts(ApplicationDbContext context, IEnumerable<Licence> licences, IEnumerable<Comment> comments)
-    {
-        List<Product> products = [
-          new() {
+  private static async Task SeedProducts(ApplicationDbContext context, IEnumerable<Licence> licences, IEnumerable<Comment> comments) {
+    List<Product> products = [
+      new() {
         Id = 1,
         Name = "Flüsternde Schatten",
         Image = "./Images/finstere_schatten.webp",
@@ -135,15 +130,14 @@ public static class SeedService
         LicenceId = licences.Last().Id,
         Comments = comments.Skip(4).Take(2).ToList()
       }
-        ];
+    ];
 
-        await context.AddRangeAsync(products);
-    }
+    await context.AddRangeAsync(products);
+  }
 
-    private static async Task SeedMaintances(ApplicationDbContext context)
-    {
-        List<Maintenance> maintenances = [
-          new() {
+  private static async Task SeedMaintances(ApplicationDbContext context) {
+    List<Maintenance> maintenances = [
+      new() {
         Id = 1,
         Message = "Wir erweitern die Server Kapazitäten. Daher wird es zu einer kurzen Downtime kommen.",
         Reason = "Erweiterung der Server Kapazitäten",
@@ -157,6 +151,6 @@ public static class SeedService
       },
     ];
 
-        await context.AddRangeAsync(maintenances);
-    }
+    await context.AddRangeAsync(maintenances);
+  }
 }
