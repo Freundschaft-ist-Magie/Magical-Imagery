@@ -8,7 +8,7 @@ using Radzen;
 using System.Data;
 using Web.Components;
 using Web.Components.Account;
-using Web.Service;
+using Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +24,7 @@ builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 builder.Services.AddScoped<DialogService>();
 builder.Services.AddSingleton<ShoppingCartService>();
+builder.Services.AddSingleton<FileService>();
 
 builder.Services.AddAuthentication(options =>
     {

@@ -1,28 +1,4 @@
-﻿.header {
-  display: flex;
-  justify-content: space-between;
-  vertical-align: middle;
-  background: var(--secondary);
-  background: linear-gradient(90deg, var(--secondary) 40%, var(--primary) 100%);
-  color: white;
-  text-align: center;
-  padding: 1rem 12rem;
-  border-radius: .5rem;
-}
-
-  .header div {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  .header img {
-    width: 12rem;
-    height: auto;
-    border-radius: 1rem;
-  }
-
-.product {
+﻿.product {
   background-color: white;
   border: 1px solid #ddd;
   text-align: center;

@@ -1,0 +1,98 @@
+﻿@page "/pay"
+@inject DialogService DialogService
+
+<RadzenSteps Change="@OnChange" CanChange="@CanChange">
+	<Steps>
+		<RadzenStepsItem Text="Adresse">
+			<RadzenRow>
+				<RadzenText Text="Enter user information" />
+			</RadzenRow>
+			<RadzenTextBox Placeholder="Name" @bind-Value="name" />
+			<RadzenTextBox Placeholder="Address" @bind-Value="address" />
+			<RadzenButton Text="Save" Click="@SaveNameAndAdress" />
+		</RadzenStepsItem>
+		<RadzenStepsItem Text="Zahlungsinformationen">
+			<RadzenRow>
+				<RadzenText Text="Enter payment" />
+			</RadzenRow>
+			<RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.End" JustifyContent="JustifyContent.Center" Wrap="FlexWrap.Wrap" Gap="1rem" Class="rz-p-sm-12">
+				<RadzenFormField Text="Credit Card Number">
+					<Start>
+						<RadzenIcon Icon="credit_card" />
+					</Start>
+					<ChildContent>
+						<RadzenMask Mask="**** **** **** ****" CharacterPattern="[0-9]" Placeholder="0000 0000 0000 0000" Name="CardNr" />
+					</ChildContent>
+				</RadzenFormField>
+			</RadzenStack>
+			<RadzenButton Text="Save" Click="@SavePayment" />
+		</RadzenStepsItem>
+		<RadzenStepsItem Text="Bestätigung">
+			Vielen dank für Ihre Bestellung
+		</RadzenStepsItem>
+	</Steps>
+</RadzenSteps>
+
+@code {
+	private string name;
+	private string savedName;
+
+	private string address;
+	private string savedAddress;
+
+	private string aboutMe;
+	private string savedAboutMe;
+
+	private void OnChange()
+	{
+		name = savedName;
+		address = savedAddress;
+		aboutMe = savedAboutMe;
+	}
+
+	private async Task CanChange(StepsCanChangeEventArgs args)
+	{
+		if (args.SelectedIndex == 0 && savedName == name && savedAddress == address)
+		{
+			return;
+		}
+
+		if (args.SelectedIndex == 1 && savedAboutMe == aboutMe)
+		{
+			return;
+		}
+
+		if (args.SelectedIndex == 2)
+		{
+			return;
+		}
+
+		var response = await DialogService.Confirm(
+			"Are you sure you want to contine without saving?",
+			"Confirm",
+			new ConfirmOptions()
+				{
+					CloseDialogOnEsc = false,
+					CloseDialogOnOverlayClick = false,
+					ShowClose = false,
+					CancelButtonText = "No",
+					OkButtonText = "Yes",
+				});
+
+		if (response == false)
+		{
+			args.PreventDefault();
+		}
+	}
+
+	private void SaveNameAndAdress()
+	{
+		savedName = name;
+		savedAddress = address;
+	}
+
+	private void SavePayment()
+	{
+		savedAboutMe = aboutMe;
+	}
+}
