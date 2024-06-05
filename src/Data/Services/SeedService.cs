@@ -1,18 +1,21 @@
 ﻿using Data.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Data.Services;
 public static class SeedService {
-  public static async Task SeedDb(this ApplicationDbContext context) {
+  public static async Task SeedDb(this ApplicationDbContext context, UserManager<ApplicationUser> userManager) {
     context.Database.Migrate();
 
     if (context.Products.Any())
       return;
-
+      
     var licences = await SeedLicences(context);
     var comments = await SeedComments(context);
     await SeedProducts(context, licences, comments);
     await SeedMaintances(context);
+    await SeedUsers(context, userManager);
     await context.SaveChangesAsync();
   }
 
@@ -82,7 +85,7 @@ public static class SeedService {
       }
     ];
 
-    await context.AddRangeAsync(comments);
+    // no need to add comments to the context, as they are added to the products
     return comments;
   }
 
@@ -152,5 +155,49 @@ public static class SeedService {
     ];
 
     await context.AddRangeAsync(maintenances);
+  }
+
+  private static async Task SeedUsers(ApplicationDbContext context, UserManager<ApplicationUser> userManager) {
+    //string[] roles = ["Administrator", "Moderator", "Artist", "Customer"];
+    PasswordHasher<ApplicationUser> passwordHasher = new();
+
+    // set up roles
+    /*
+    foreach (string role in roles) {
+      RoleStore<IdentityRole> roleStore = new(context);
+
+      if (!context.Roles.Any(r => r.Name == role)) {
+        await roleStore.CreateAsync(new IdentityRole(role));
+      }
+    }
+    */
+
+    // set up users
+    List<ApplicationUser> users = [
+      new() {
+        Email = "admin@example.com",
+        UserName = "admin@example.com",
+        EmailConfirmed = true,
+      },
+      new() {
+        Email = "test@example.com",
+        UserName = "test@example.com",
+        EmailConfirmed = true,
+      },
+    ];
+
+    // set up passwords
+    foreach (var user in users) {
+      //string role = user.UserName == "admin" ? roles[0] : roles[3];
+
+      await userManager.CreateAsync(user, "*Asdf123");
+      //await AssignRoles(serviceProvider, user, role);
+    }
+  }
+
+  private static async Task AssignRoles(IServiceProvider serviceProvider, ApplicationUser user, string role) {
+    UserManager<ApplicationUser> userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+    
+    await userManager.AddToRoleAsync(user, role);
   }
 }

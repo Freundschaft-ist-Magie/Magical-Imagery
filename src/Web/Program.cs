@@ -56,7 +56,7 @@ var userManager = sp.GetRequiredService<UserManager<ApplicationUser>>();
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
-    await context.SeedDb();
+    await context.SeedDb(userManager);
 }
 else
 {
