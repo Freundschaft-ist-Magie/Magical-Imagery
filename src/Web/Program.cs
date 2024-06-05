@@ -39,6 +39,7 @@ builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddUserManager<UserManager<ApplicationUser>>()
     .AddSignInManager()
@@ -51,12 +52,13 @@ var scope = app.Services.CreateScope();
 var sp = scope.ServiceProvider;
 var context = sp.GetRequiredService<ApplicationDbContext>();
 var userManager = sp.GetRequiredService<UserManager<ApplicationUser>>();
+var roleManager = sp.GetRequiredService<RoleManager<IdentityRole>>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
-    await context.SeedDb(userManager);
+    await context.SeedDb(userManager, roleManager);
 }
 else
 {
