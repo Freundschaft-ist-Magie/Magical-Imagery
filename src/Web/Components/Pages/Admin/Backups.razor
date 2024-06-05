@@ -1,0 +1,50 @@
+﻿@page "/admin/dashboard"
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<ApplicationUser> UserManager
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+
+@if (!string.IsNullOrWhiteSpace(ErrorMessage)) {
+  <div class="alert alert-danger" role="alert">
+    @ErrorMessage
+  </div>
+} else if (IsLoading) {
+  <LoadingSkeleton />
+} else {
+
+}
+
+@code {
+  private string ErrorMessage { get; set; }
+  private ApplicationUser User { get; set; }
+
+  private bool IsLoading = true;
+
+  protected override async Task OnInitializedAsync() {
+    await base.OnInitializedAsync();
+
+    using var context = await DbFactory.CreateDbContextAsync();
+
+    var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+    var currentUser = authState.User;
+
+    var user = await context.Users.FirstOrDefaultAsync(u => u.Email == currentUser.Identity.Name);
+
+    if (user == null) {
+      ErrorMessage = "User not found.";
+      return;
+    }
+
+    bool isAdmin = await UserManager.IsInRoleAsync(user, "Admin");
+
+    if (!currentUser.Identity.IsAuthenticated || !isAdmin) {
+      ErrorMessage = "You are not authorized to view this page.";
+      return;
+    }
+
+    User = user;
+
+    IsLoading = false;
+  }
+}
