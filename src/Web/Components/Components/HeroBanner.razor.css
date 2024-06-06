@@ -1,13 +1,28 @@
-﻿.header {
+﻿@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.header {
   display: flex;
   justify-content: space-between;
   vertical-align: middle;
-  background: var(--secondary);
   background: linear-gradient(90deg, var(--secondary) 40%, var(--primary) 100%);
+  background-size: 200% 200%;
   color: white;
   text-align: center;
   padding: 1rem 12rem;
   border-radius: .5rem;
+  animation: gradientAnimation 5s infinite;
 }
 
   .header div {
