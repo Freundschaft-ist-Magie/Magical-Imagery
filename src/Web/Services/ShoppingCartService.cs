@@ -15,11 +15,16 @@ public class ShoppingCartService {
     products.Add(product);
   }
 
-  public void RemoveProduct(Product product) {
-    products.Remove(product);
-  }
+	public void RemoveProduct(Product product)
+	{
+		var productToRemove = products.Where(p => p.Id == product.Id).FirstOrDefault();
+		if (productToRemove == null)
+			return;
 
-  public void Clear() {
+		products.Remove(productToRemove);
+	}
+
+	public void Clear() {
     products.Clear();
   }
 }
