@@ -2,6 +2,7 @@
 @inject IDbContextFactory<ApplicationDbContext> DbFactory
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject UserManager<ApplicationUser> UserManager
+  @inject IJSRuntime JS
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.EntityFrameworkCore
 
@@ -20,7 +21,7 @@
         <table class="table">
           <thead>
             <tr>
-              <th>Filename</th>
+              <th>Dateiname</th>
               <th>Herunterladen</th>
             </tr>
           </thead>
@@ -47,6 +48,16 @@
     </div>
   </div>
 }
+
+<script>
+  window.triggerFileDownload = (fileName, url) => {
+    const anchorElement = document.createElement('a');
+    anchorElement.href = url;
+    anchorElement.download = fileName ?? '';
+    anchorElement.click();
+    anchorElement.remove();
+  }
+</script>
 
 @code {
   private string ErrorMessage { get; set; }
@@ -91,7 +102,9 @@
                           .ToList()!;
   }
 
-  private void DownloadFile(string fileName) {
-    throw new NotImplementedException();
+  // https://learn.microsoft.com/en-us/aspnet/core/blazor/file-downloads?view=aspnetcore-8.0#download-from-a-url
+  private async Task DownloadFile(string fileName) {
+    string fileURL = $"file/{fileName}/download";
+    await JS.InvokeVoidAsync("triggerFileDownload", fileName, fileURL);
   }
 }
