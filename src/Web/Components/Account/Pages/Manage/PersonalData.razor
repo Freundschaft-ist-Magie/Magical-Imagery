@@ -2,33 +2,32 @@
 
 @inject IdentityUserAccessor UserAccessor
 
-<PageTitle>Personal Data</PageTitle>
+<PageTitle>Persönliche Daten</PageTitle>
 
 <StatusMessage />
-<h3>Personal Data</h3>
+<h3>Persönliche Daten</h3>
 
 <div class="row">
-    <div class="col-md-6">
-        <p>Your account contains personal data that you have given us. This page allows you to download or delete that data.</p>
-        <p>
-            <strong>Deleting this data will permanently remove your account, and this cannot be recovered.</strong>
-        </p>
-        <form action="Account/Manage/DownloadPersonalData" method="post">
-            <AntiforgeryToken />
-            <button class="btn btn-primary" type="submit">Download</button>
-        </form>
-        <p>
-            <a href="Account/Manage/DeletePersonalData" class="btn btn-danger">Delete</a>
-        </p>
-    </div>
+  <div class="col-md-6">
+    <p>Ihr Konto enthält persönliche Daten, die Sie uns gegeben haben. Diese Seite ermöglicht es Ihnen, diese Daten herunterzuladen oder zu löschen.</p>
+    <p>
+      <strong>Das Löschen dieser Daten wird Ihr Konto dauerhaft entfernen, und dies kann nicht wiederhergestellt werden.</strong>
+    </p>
+    <form action="Account/Manage/DownloadPersonalData" method="post">
+      <AntiforgeryToken />
+      <button class="btn btn-primary" type="submit">Herunterladen</button>
+    </form>
+    <p>
+      <a href="Account/Manage/DeletePersonalData" class="btn btn-danger">Löschen</a>
+    </p>
+  </div>
 </div>
 
 @code {
-    [CascadingParameter]
-    private HttpContext HttpContext { get; set; } = default!;
+  [CascadingParameter]
+  private HttpContext HttpContext { get; set; } = default!;
 
-    protected override async Task OnInitializedAsync()
-    {
-        _ = await UserAccessor.GetRequiredUserAsync(HttpContext);
-    }
+  protected override async Task OnInitializedAsync() {
+    _ = await UserAccessor.GetRequiredUserAsync(HttpContext);
+  }
 }
