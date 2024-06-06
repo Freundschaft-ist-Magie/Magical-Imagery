@@ -22,7 +22,7 @@
           <thead>
             <tr>
               <th>Dateiname</th>
-              <th>Herunterladen</th>
+              <th>Optionen</th>
             </tr>
           </thead>
 
@@ -38,6 +38,9 @@
                 <td>
                   <RadzenButton Click="() => DownloadFile(backup)" ButtonStyle="ButtonStyle.Primary">
                     <RadzenIcon Icon="download" />
+                  </RadzenButton>
+                  <RadzenButton Click="() => DeleteFile(backup)" ButtonStyle="ButtonStyle.Danger">
+                    <RadzenIcon Icon="delete" />
                   </RadzenButton>
                 </td>
               </tr>
@@ -106,5 +109,14 @@
   private async Task DownloadFile(string fileName) {
     string fileURL = $"file/{fileName}/download";
     await JS.InvokeVoidAsync("triggerFileDownload", fileName, fileURL);
+  }
+
+  private void DeleteFile(string fileName) {
+    string path = Path.Combine(Directory.GetCurrentDirectory(), "Backups", fileName);
+
+    if (File.Exists(path)) {
+      File.Delete(path);
+      LoadBackups();
+    }
   }
 }
