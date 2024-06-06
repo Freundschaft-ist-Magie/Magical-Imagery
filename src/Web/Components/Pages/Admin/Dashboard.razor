@@ -2,6 +2,7 @@
 @inject IDbContextFactory<ApplicationDbContext> DbFactory
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject UserManager<ApplicationUser> UserManager
+@inject IJSRuntime JS
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.EntityFrameworkCore
 @using Newtonsoft.Json
@@ -60,7 +61,7 @@
           } else if (IsBackupInProgress) {
             <RadzenProgressBar Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="margin-top: 1rem;" />
           } else if (BackupFilePath != null) {
-            <RadzenButton Click=BackupDatabase ButtonStyle="ButtonStyle.Primary">
+            <RadzenButton Click=DownloadBackup ButtonStyle="ButtonStyle.Primary">
               <RadzenIcon Icon="download" Style="margin-right: .25rem;" />
               Backup herunterladen
             </RadzenButton>
@@ -87,6 +88,16 @@
     </div>
   </div>
 }
+
+<script>
+  window.triggerFileDownload = (fileName, url) => {
+    const anchorElement = document.createElement('a');
+    anchorElement.href = url;
+    anchorElement.download = fileName ?? '';
+    anchorElement.click();
+    anchorElement.remove();
+  }
+</script>
 
 @code {
   private string ErrorMessage { get; set; }
@@ -156,5 +167,13 @@
     } finally {
       IsBackupInProgress = false;
     }
+  }
+
+  // https://learn.microsoft.com/en-us/aspnet/core/blazor/file-downloads?view=aspnetcore-8.0#download-from-a-url
+  private async Task DownloadBackup() {
+    // not nullable, because button is only shown, when Backup is created.
+    string fileName = Path.GetFileName(BackupFilePath)!;
+    string fileURL = $"file/{fileName}/download";
+    await JS.InvokeVoidAsync("triggerFileDownload", fileName, fileURL);
   }
 }
