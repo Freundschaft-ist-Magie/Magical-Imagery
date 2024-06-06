@@ -1,0 +1,179 @@
+﻿@page "/admin/dashboard"
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<ApplicationUser> UserManager
+@inject IJSRuntime JS
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+@using Newtonsoft.Json
+
+@if (!string.IsNullOrWhiteSpace(ErrorMessage)) {
+  <div class="alert alert-danger" role="alert">
+    @ErrorMessage
+  </div>
+} else if (IsLoading) {
+  <LoadingSkeleton />
+} else {
+  <div class="d-flex align-items-stretch container mt-3">
+    <div class="d-flex flex-columnav flex-grow-1 p-3 bg-light">
+      <div style="height: fit-content;">
+        <RadzenCard Style="text-align: center;">
+          <RadzenImage Path="https://placehold.co/126" Style="width: 126px; height: 126px; border-radius: 9999rem;" />
+          <h3 title=@User.UserName class="text-truncate">
+            @User.UserName
+          </h3>
+          <p>@UserRole</p>
+        </RadzenCard>
+
+        <hr />
+
+        <RadzenCard>
+          <h5>User suchen</h5>
+
+          <div class="mb-3">
+            <RadzenLabel Text="Name / Email" Component="employeeName" />
+            <RadzenTextBox Id="employeeName" Style="width: 100%;" Name="employeeName" />
+          </div>
+
+          <div class="mb-3">
+            <RadzenLabel Text="Role" Component="Role" />
+            <RadzenDropDown @bind-Value=@selectedRole Data="@Roles" Style="width: 100%;" Name="Role" />
+          </div>
+
+          <RadzenButton Text="Suchen" Style="width: 100%;" ButtonStyle="ButtonStyle.Primary" />
+        </RadzenCard>
+      </div>
+    </div>
+
+    <div class="flex-grow-1 p-3">
+      <RadzenCard Style="display: flex; flex-direction: column; height: 100%; justify-content: space-between;">
+        <div>
+          <h2 class="mb-3">Settings</h2>
+
+          <RadzenButton Click=BackupDatabase ButtonStyle="ButtonStyle.Danger">
+            <RadzenIcon Icon="backup" Style="margin-right: .25rem;" />
+            Backup der Datenbank
+          </RadzenButton>
+          @if (!string.IsNullOrEmpty(BackupErrorMessage)) {
+            <div class="alert alert-danger mt-3" role="alert">
+              @BackupErrorMessage
+            </div>
+          } else if (IsBackupInProgress) {
+            <RadzenProgressBar Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="margin-top: 1rem;" />
+          } else if (BackupFilePath != null) {
+            <RadzenButton Click=DownloadBackup ButtonStyle="ButtonStyle.Primary">
+              <RadzenIcon Icon="download" Style="margin-right: .25rem;" />
+              Backup herunterladen
+            </RadzenButton>
+          }
+        </div>
+
+        <RadzenDataGrid Data="@Users" AllowFiltering=true AllowColumnPicking=false Style="max-height: 20rem;">
+          <Columns>
+            <RadzenDataGridColumn Property="Email" Title="Email / Username" />
+            <RadzenDataGridColumn Property="EmailConfirmed" Title="Confirmed">
+              <Template Context="data">
+                <RadzenCheckBox TValue=bool Value="@(data.EmailConfirmed)" Disabled=true />
+              </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn Property="PhoneNumber" Title="Phone number" />
+            <RadzenDataGridColumn Property="TwoFactorEnabled" Title="Two Factor">
+              <Template Context="data">
+                <RadzenCheckBox TValue=bool Value="@(data.TwoFactorEnabled)" Disabled=true />
+              </Template>
+            </RadzenDataGridColumn>
+          </Columns>
+        </RadzenDataGrid>
+      </RadzenCard>
+    </div>
+  </div>
+}
+
+<script>
+  window.triggerFileDownload = (fileName, url) => {
+    const anchorElement = document.createElement('a');
+    anchorElement.href = url;
+    anchorElement.download = fileName ?? '';
+    anchorElement.click();
+    anchorElement.remove();
+  }
+</script>
+
+@code {
+  private string ErrorMessage { get; set; }
+  private List<ApplicationUser> Users { get; set; }
+  private ApplicationUser User { get; set; }
+  private List<string?> Roles { get; set; }
+  private string UserRole { get; set; }
+  private string? BackupFilePath { get; set; }
+  private string? BackupErrorMessage { get; set; }
+
+  private string selectedRole = string.Empty;
+  private bool IsLoading = true;
+  private bool IsBackupInProgress = false;
+
+  protected override async Task OnInitializedAsync() {
+    await base.OnInitializedAsync();
+
+    using var context = await DbFactory.CreateDbContextAsync();
+
+    var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+    var currentUser = authState.User;
+
+    Users = await context.Users.ToListAsync();
+    Roles = await context.Roles.Select(r => r.Name).ToListAsync();
+    var user = await context.Users.FirstOrDefaultAsync(u => u.Email == currentUser.Identity.Name);
+
+    if (user == null) {
+      ErrorMessage = "User not found.";
+      return;
+    }
+
+    bool isAdmin = await UserManager.IsInRoleAsync(user, "Admin");
+
+    if (!currentUser.Identity.IsAuthenticated || !isAdmin) {
+      ErrorMessage = "You are not authorized to view this page.";
+      return;
+    }
+
+    User = user;
+    UserRole = (await UserManager.GetRolesAsync(user)).FirstOrDefault() ?? "keine";
+
+    IsLoading = false;
+  }
+
+  private async Task BackupDatabase() {
+    IsBackupInProgress = true;
+
+    try {
+      using var context = await DbFactory.CreateDbContextAsync();
+      var databaseName = context.Database.GetDbConnection().Database;
+
+      var backupDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Backups");
+      if (!Directory.Exists(backupDirectory)) {
+        Directory.CreateDirectory(backupDirectory);
+      }
+      BackupFilePath = Path.Combine(backupDirectory, $"{databaseName}_Backup_{DateTime.Now:yyyyMMddHHmmss}.json");
+
+      // mySQl export did not work, so I used Newtonsoft.Json to serialize the data
+      var json = JsonConvert.SerializeObject(context, new JsonSerializerSettings {
+        ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+        Formatting = Formatting.Indented
+      });
+
+      await File.WriteAllTextAsync(BackupFilePath, json);
+    } catch (Exception ex) {
+      BackupErrorMessage = "Backup failed. Please try again.";
+    } finally {
+      IsBackupInProgress = false;
+    }
+  }
+
+  // https://learn.microsoft.com/en-us/aspnet/core/blazor/file-downloads?view=aspnetcore-8.0#download-from-a-url
+  private async Task DownloadBackup() {
+    // not nullable, because button is only shown, when Backup is created.
+    string fileName = Path.GetFileName(BackupFilePath)!;
+    string fileURL = $"file/{fileName}/download";
+    await JS.InvokeVoidAsync("triggerFileDownload", fileName, fileURL);
+  }
+}

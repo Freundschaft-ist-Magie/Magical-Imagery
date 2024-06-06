@@ -1,0 +1,122 @@
+﻿@page "/admin/backups"
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<ApplicationUser> UserManager
+@inject IJSRuntime JS
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+
+@if (!string.IsNullOrWhiteSpace(ErrorMessage)) {
+  <div class="alert alert-danger" role="alert">
+    @ErrorMessage
+  </div>
+} else if (IsLoading) {
+  <LoadingSkeleton />
+} else {
+  <div class="container mt-3">
+    <div class="row">
+      <div class="col-md-12">
+        <h1>Backups</h1>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Dateiname</th>
+              <th>Optionen</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @if (BackupList.Count == 0) {
+              <tr>
+                <td colspan="2">Keine Backups gefunden.</td>
+              </tr>
+            }
+            @foreach (var backup in BackupList) {
+              <tr>
+                <td>@backup</td>
+                <td>
+                  <RadzenButton Click="() => DownloadFile(backup)" ButtonStyle="ButtonStyle.Primary">
+                    <RadzenIcon Icon="download" />
+                  </RadzenButton>
+                  <RadzenButton Click="() => DeleteFile(backup)" ButtonStyle="ButtonStyle.Danger">
+                    <RadzenIcon Icon="delete" />
+                  </RadzenButton>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+}
+
+<script>
+  window.triggerFileDownload = (fileName, url) => {
+    const anchorElement = document.createElement('a');
+    anchorElement.href = url;
+    anchorElement.download = fileName ?? '';
+    anchorElement.click();
+    anchorElement.remove();
+  }
+</script>
+
+@code {
+  private string ErrorMessage { get; set; }
+  private ApplicationUser User { get; set; }
+  private List<string> BackupList { get; set; }
+
+  private bool IsLoading = true;
+
+  protected override async Task OnInitializedAsync() {
+    await base.OnInitializedAsync();
+
+    await AuthorizeUser();
+    LoadBackups();
+
+    IsLoading = false;
+  }
+
+  private async Task AuthorizeUser() {
+    using var context = await DbFactory.CreateDbContextAsync();
+    var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+    var currentUser = authState.User;
+
+    var user = await context.Users.FirstOrDefaultAsync(u => u.Email == currentUser.Identity.Name);
+    if (user == null) {
+      ErrorMessage = "User not found.";
+      return;
+    }
+
+    bool isAdmin = await UserManager.IsInRoleAsync(user, "Admin");
+    if (!currentUser.Identity.IsAuthenticated || !isAdmin) {
+      ErrorMessage = "You are not authorized to view this page.";
+      return;
+    }
+
+    User = user;
+  }
+
+  private void LoadBackups() {
+    string backupsPath = Path.Combine(Directory.GetCurrentDirectory(), "Backups");
+    BackupList = Directory.GetFiles(backupsPath, "*.json")
+                          .Select(Path.GetFileName)
+                          .ToList()!;
+  }
+
+  // https://learn.microsoft.com/en-us/aspnet/core/blazor/file-downloads?view=aspnetcore-8.0#download-from-a-url
+  private async Task DownloadFile(string fileName) {
+    string fileURL = $"file/{fileName}/download";
+    await JS.InvokeVoidAsync("triggerFileDownload", fileName, fileURL);
+  }
+
+  private void DeleteFile(string fileName) {
+    string path = Path.Combine(Directory.GetCurrentDirectory(), "Backups", fileName);
+
+    if (File.Exists(path)) {
+      File.Delete(path);
+      LoadBackups();
+    }
+  }
+}

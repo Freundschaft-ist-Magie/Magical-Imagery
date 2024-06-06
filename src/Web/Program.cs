@@ -15,6 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents(circuit => circuit.DetailedErrors = true);
+builder.Services.AddControllers();
 
 builder.Services.AddRadzenComponents();
 
@@ -39,6 +40,7 @@ builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddUserManager<UserManager<ApplicationUser>>()
     .AddSignInManager()
@@ -51,12 +53,13 @@ var scope = app.Services.CreateScope();
 var sp = scope.ServiceProvider;
 var context = sp.GetRequiredService<ApplicationDbContext>();
 var userManager = sp.GetRequiredService<UserManager<ApplicationUser>>();
+var roleManager = sp.GetRequiredService<RoleManager<IdentityRole>>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
-    await context.SeedDb();
+    await context.SeedDb(userManager, roleManager);
 }
 else
 {
@@ -75,5 +78,6 @@ app.MapRazorComponents<App>()
 
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();
+app.MapControllers();
 
 app.Run();
