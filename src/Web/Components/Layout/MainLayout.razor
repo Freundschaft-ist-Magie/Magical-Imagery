@@ -17,7 +17,7 @@
 			    <RadzenLabel Style="cursor: pointer;" Text="Magical Imagery" />
         </NavLink>
 
-			  <div class="d-flex gap-2" role="button" @onclick="NavigateToCart">
+        <div @onclick="NavigateToCart" class="d-flex gap-2" style="cursor: pointer;" role="button">
 				  <RadzenIcon Icon="credit_card" />
 				  <RadzenLabel  Text="@($"Zum Warenkorb: { itemsInCard }")" />
         </div>
