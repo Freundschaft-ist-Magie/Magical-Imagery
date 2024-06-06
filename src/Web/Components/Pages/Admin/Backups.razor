@@ -1,4 +1,4 @@
-﻿@page "/admin/dashboard"
+﻿@page "/admin/backups"
 @inject IDbContextFactory<ApplicationDbContext> DbFactory
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject UserManager<ApplicationUser> UserManager
@@ -12,39 +12,86 @@
 } else if (IsLoading) {
   <LoadingSkeleton />
 } else {
+  <div class="container mt-3">
+    <div class="row">
+      <div class="col-md-12">
+        <h1>Backups</h1>
 
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Filename</th>
+              <th>Herunterladen</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @if (BackupList.Count == 0) {
+              <tr>
+                <td colspan="2">Keine Backups gefunden.</td>
+              </tr>
+            }
+            @foreach (var backup in BackupList) {
+              <tr>
+                <td>@backup</td>
+                <td>
+                  <RadzenButton Click="() => DownloadFile(backup)" ButtonStyle="ButtonStyle.Primary">
+                    <RadzenIcon Icon="download" />
+                  </RadzenButton>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 }
 
 @code {
   private string ErrorMessage { get; set; }
   private ApplicationUser User { get; set; }
+  private List<string> BackupList { get; set; }
 
   private bool IsLoading = true;
 
   protected override async Task OnInitializedAsync() {
     await base.OnInitializedAsync();
 
-    using var context = await DbFactory.CreateDbContextAsync();
+    await AuthorizeUser();
+    LoadBackups();
 
+    IsLoading = false;
+  }
+
+  private async Task AuthorizeUser() {
+    using var context = await DbFactory.CreateDbContextAsync();
     var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
     var currentUser = authState.User;
 
     var user = await context.Users.FirstOrDefaultAsync(u => u.Email == currentUser.Identity.Name);
-
     if (user == null) {
       ErrorMessage = "User not found.";
       return;
     }
 
     bool isAdmin = await UserManager.IsInRoleAsync(user, "Admin");
-
     if (!currentUser.Identity.IsAuthenticated || !isAdmin) {
       ErrorMessage = "You are not authorized to view this page.";
       return;
     }
 
     User = user;
+  }
 
-    IsLoading = false;
+  private void LoadBackups() {
+    string backupsPath = Path.Combine(Directory.GetCurrentDirectory(), "Backups");
+    BackupList = Directory.GetFiles(backupsPath, "*.json")
+                          .Select(Path.GetFileName)
+                          .ToList()!;
+  }
+
+  private void DownloadFile(string fileName) {
+    throw new NotImplementedException();
   }
 }
