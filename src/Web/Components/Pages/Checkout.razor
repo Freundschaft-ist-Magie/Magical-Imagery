@@ -34,7 +34,7 @@
 
 		@foreach (var item in products)
 		{
-			<ProductCard Product="item" />
+			<ProductCard Product="item" EventCallBack=Remove />
 		}
 
     @if(products.Count != 0)
@@ -100,6 +100,12 @@ else
     var result = total - discount;
     return result < 0 ? 0 : result;
   }
+
+	private void Remove(Product product)
+	{
+		ShoppingCartService.RemoveProduct(product);
+		StateHasChanged();
+	}
 
   /// <summary>
   /// Displays the price as currency. Only supportes CHF.

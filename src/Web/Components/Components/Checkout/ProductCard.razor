@@ -1,4 +1,6 @@
-﻿<div class="cart-item">
+﻿@using Web.Services
+@inject ShoppingCartService ShoppingCartService
+<div class="cart-item">
 	<div class="item-image">
     <img src="@Product.Image" alt="Product Image" />
 		@* Unused, but do not remove; perhaps useful for future
@@ -34,7 +36,7 @@
       </p>
 		</div>
 	</div>
-	<button class="remove-btn">
+	<button @onclick="Remove" class="remove-btn">
 		<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="15" height="15">
 			<line y1="10" y2="90" stroke="black" x1="10" x2="90" stroke-width="10"></line>
 			<line x1="90" y1="10" x2="10" y2="90" stroke="black" stroke-width="10"></line>
@@ -46,4 +48,13 @@
 	[Parameter]
 	[EditorRequired]
 	public Product Product { get; set; }
+
+	[Parameter]
+	[EditorRequired]
+	public Action<Product> EventCallBack { get; set; }
+
+	private void Remove()
+	{
+		EventCallBack(Product);
+	}
 }
