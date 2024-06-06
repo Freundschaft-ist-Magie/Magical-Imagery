@@ -202,6 +202,7 @@ namespace Data.Migrations
                         .HasColumnType("int unsigned");
 
                     b.Property<string>("Tags")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<int>("Width")

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240529084455_Init")]
+    [Migration("20240606101246_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -205,6 +205,7 @@ namespace Data.Migrations
                         .HasColumnType("int unsigned");
 
                     b.Property<string>("Tags")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<int>("Width")

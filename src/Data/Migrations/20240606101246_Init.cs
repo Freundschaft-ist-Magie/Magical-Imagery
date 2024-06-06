@@ -246,7 +246,7 @@ namespace Data.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Description = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Tags = table.Column<string>(type: "longtext", nullable: true)
+                    Tags = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Price = table.Column<uint>(type: "int unsigned", nullable: false),
                     Likes = table.Column<uint>(type: "int unsigned", nullable: false),
