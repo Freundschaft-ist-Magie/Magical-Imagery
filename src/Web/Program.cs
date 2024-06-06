@@ -58,7 +58,6 @@ var roleManager = sp.GetRequiredService<RoleManager<IdentityRole>>();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseMigrationsEndPoint();
     await context.SeedDb(userManager, roleManager);
 }
 else
