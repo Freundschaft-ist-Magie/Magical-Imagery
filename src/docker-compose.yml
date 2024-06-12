@@ -6,8 +6,10 @@ services:
     build:
       context: .
       dockerfile: Web/Dockerfile
+    depends_on:
+      - db
   db:
-      image: mysql:5.7
+      image: mysql:latest
       environment:
         MYSQL_ROOT_PASSWORD: rootpassword  
         MYSQL_DATABASE: magical         
