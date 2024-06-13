@@ -7,7 +7,6 @@
 @using Microsoft.EntityFrameworkCore
 @using Web.Services
 
-<PageTitle>@Product.Name</PageTitle>
 
 @if (!string.IsNullOrWhiteSpace(ErrorMessage)) {
   <div class="alert alert-danger" role="alert">
@@ -16,6 +15,7 @@
 } else if (IsLoading) {
   <LoadingSkeleton />
 } else {
+  <PageTitle>@Product.Name</PageTitle>
   <div class="container p-0">
     <div class="row">
       <div class="col-md-6">
