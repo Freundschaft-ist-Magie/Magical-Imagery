@@ -75,15 +75,15 @@ else
 @code {
   bool pageLoaded = false;
   private List<Product> products;
-  private decimal total;
-  private byte discount = 0;
+  private double total;
+  private double discount = 0;
   private string discountCode = "";
 
   protected override async Task OnInitializedAsync()
   {
     await base.OnInitializedAsync();
     products = ShoppingCartService.Products;
-    total = ShoppingCartService.Total;
+    total = (double)ShoppingCartService.Total;
 
     pageLoaded = true;
   }
@@ -93,24 +93,24 @@ else
     Navigation.NavigateTo("/pay");
   }
 
-  private decimal CalulateDiscount()
+  private double CalulateDiscount()
   {
     var result = total - discount;
     return result < 0 ? 0 : result;
   }
 
-	private void Remove(Product product)
-	{
-		ShoppingCartService.RemoveProduct(product);
-		StateHasChanged();
-	}
+  private void Remove(Product product)
+  {
+    ShoppingCartService.RemoveProduct(product);
+    StateHasChanged();
+  }
 
   /// <summary>
   /// Displays the price as currency. Only supportes CHF.
   /// </summary>
   /// <param name="price"> The price to display. </param>
   /// <returns> currency string </returns>
-  private string DisplayPriceAsCurrency(decimal price) {
+  private string DisplayPriceAsCurrency(double price) {
     return String.Format(new System.Globalization.CultureInfo("de-CH"), "{0:C}", price);
   }
 
@@ -119,6 +119,16 @@ else
   /// </summary>
   private void submitDiscountCode()
   {
-    if (discountCode == "M306") discount = 10;
+    if (discountCode == "M306")
+      discount = 10;
+    else if (discountCode == "Maxim")
+      discount = total * 0.1;
+    else if (discountCode == "Magical") {
+      Random random = new Random();
+      discount = random.NextDouble() * 100; // Generates a random discount between 0 and 100
+      if (discount >= total) {
+        discount -= total;
+      }
+    }
   }
 }
