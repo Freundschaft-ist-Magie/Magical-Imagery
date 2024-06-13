@@ -7,6 +7,8 @@
 @using Microsoft.EntityFrameworkCore
 @using Web.Services
 
+<PageTitle>@Product.Name</PageTitle>
+
 @if (!string.IsNullOrWhiteSpace(ErrorMessage)) {
   <div class="alert alert-danger" role="alert">
     @ErrorMessage
