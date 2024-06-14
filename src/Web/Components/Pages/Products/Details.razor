@@ -7,114 +7,127 @@
 @using Microsoft.EntityFrameworkCore
 @using Web.Services
 
-@if (!string.IsNullOrWhiteSpace(ErrorMessage)) {
-  <div class="alert alert-danger" role="alert">
-    @ErrorMessage
-  </div>
-} else if (IsLoading) {
-  <LoadingSkeleton />
-} else {
-  <div class="container p-0">
-    <div class="row">
-      <div class="col-md-6">
-        <div class="d-flex justify-content-center">
-          <img src="@(Product.Image)" alt="Produktbild" class="product-image">
-        </div>
-
-        <div class="d-flex flex-column align-content-center justify-content-center my-2">
-          <RadzenButton Variant="!IsLiked ? Variant.Outlined : Variant.Filled"
-                        Click=ToggleLike ButtonStyle="ButtonStyle.Info" Style="width: fit-content; margin: 0.5rem auto;">
-            @Product.Likes
-            <svg width="20" height="20" style="margin-bottom: 2px;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path fill-rule="evenodd" clip-rule="evenodd" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#000000" />
-            </svg>
-          </RadzenButton>
-
-          <RadzenButton ButtonStyle="ButtonStyle.Secondary" Click="ShowEdit" Style="width: fit-content; margin: auto;">
-            Bearbeiten
-          </RadzenButton>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="product-details">
-
-          <h1 class="product-title">@(Product.Name)</h1>
-          <p class="product-price">
-            @String.Format(new System.Globalization.CultureInfo("de-CH"), "{0:C}", Product.Price)
-          </p>
-
-          <p class="product-description">
-            @Product.Description
-          </p>
-
-          <div class="technical-description">
-            <h3>Technische Beschreibung</h3>
-            <ul>
-              @foreach (var tag in Product.Tags) {
-                <li>@tag</li>
-              }
-              <li>@Product.Pixel</li>
-            </ul>
-
-            <p>
-              <b>Was Sie erhalten:</b> Hochauflösende (4k+) handgemalte digitale Kunstdatei, die
-              Sie herunterladen und bis zu einer beliebigen Auflösung ausdrucken können. 100% Zufriedenheitsgarantie.
-            </p>
-          </div>
-
-          <div class="option-table">
-            <h3>Lizenz</h3>
-
-            @if (@Product.Licence != null) {
-              <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H4" Style="font-width: bold;">
-                @Product.Licence.Name
-              </RadzenText>
-
-              <p>@Product.Licence.ShortDescription</p>
-
-              <p>
-                Die komplette Beschreibung zu den Lizenzen ist auf der <NavLink href="@("licences/" + Product.LicenceId)">Lizenz Seite</NavLink> zu finden.
-              </p>
-            } else {
-              <p>Keine Lizenzinformationen verfügbar.</p>
-              <RadzenAlert AlertStyle="AlertStyle.Danger" Variant="Variant.Flat" Shade="Shade.Dark">
-                Dies bedeutet nicht, dass dieses Produkt frei von Rechten ist. Bitte kontaktieren Sie uns für weitere Informationen.
-              </RadzenAlert>
-            }
-          </div>
-
-          <button @onclick="AddToCart" class="btn btn-primary btn-buy">In den Warenkorb</button>
-        </div>
-      </div>
+@if (!string.IsNullOrWhiteSpace(ErrorMessage))
+{
+    <div class="alert alert-danger" role="alert">
+        @ErrorMessage
     </div>
+}
+else if (IsLoading)
+{
+    <LoadingSkeleton />
+}
+else
+{
+    <div class="container p-0">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="d-flex justify-content-center">
+                    <img src="@(Product.Image)" alt="Produktbild" class="product-image">
+                </div>
 
-    <div class="comment-section">
+                <div class="d-flex flex-column align-content-center justify-content-center my-2">
+                    <RadzenButton Variant="!IsLiked ? Variant.Outlined : Variant.Filled"
+                                  Click=ToggleLike ButtonStyle="ButtonStyle.Info" Style="width: fit-content; margin: 0.5rem auto;">
+                        @Product.Likes
+                        <svg width="20" height="20" style="margin-bottom: 2px;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#000000" />
+                        </svg>
+                    </RadzenButton>
 
-      <h3>Kommentare</h3>
-
-      <div class="mb-3">
-        <label for="comment" class="form-label">Kommentar hinzufügen:</label>
-        <InputTextArea @bind-Value=CommentText class="form-control" id="comment" rows="3"></InputTextArea>
-        <button @onclick=PostComment class="btn btn-primary mt-2">Senden</button>
-      </div>
-
-      <div class="comments">
-        @if (Product.Comments?.Count > 0) {
-          @foreach (var comment in Product.Comments) {
-            <div class="comment">
-              <img src="@comment.ProfileImage" alt="User Avatar">
-              <div class="comment-body">
-                <p><b>@comment.Author:</b></p>
-                <p>@comment.Content</p>
-              </div>
+                    <RadzenButton ButtonStyle="ButtonStyle.Secondary" Click="ShowEdit" Style="width: fit-content; margin: auto;">
+                        Bearbeiten
+                    </RadzenButton>
+                </div>
             </div>
-          }
-        } else {
-          <p>Dieser Artikel hat keine Kommentare.</p>
-        }
-      </div>
+            <div class="col-md-6">
+                <div class="product-details">
+
+                    <h1 class="product-title">@(Product.Name)</h1>
+                    <p class="product-price">
+                        @String.Format(new System.Globalization.CultureInfo("de-CH"), "{0:C}", Product.Price)
+                    </p>
+
+                    <p class="product-description">
+                        @Product.Description
+                    </p>
+
+                    <div class="technical-description">
+                        <h3>Technische Beschreibung</h3>
+                        <ul>
+                            @foreach (var tag in Product.Tags)
+                            {
+                                <li>@tag</li>
+                            }
+                            <li>@Product.Pixel</li>
+                        </ul>
+
+                        <p>
+                            <b>Was Sie erhalten:</b> Hochauflösende (4k+) handgemalte digitale Kunstdatei, die
+                            Sie herunterladen und bis zu einer beliebigen Auflösung ausdrucken können. 100% Zufriedenheitsgarantie.
+                        </p>
+                    </div>
+
+                    <div class="option-table">
+                        <h3>Lizenz</h3>
+
+                        @if (@Product.Licence != null)
+                        {
+                            <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H4" Style="font-width: bold;">
+                                @Product.Licence.Name
+                            </RadzenText>
+
+                            <p>@Product.Licence.ShortDescription</p>
+
+                            <p>
+                                Die komplette Beschreibung zu den Lizenzen ist auf der <NavLink href="@("licences/" + Product.LicenceId)">Lizenz Seite</NavLink> zu finden.
+                            </p>
+                        }
+                        else
+                        {
+                            <p>Keine Lizenzinformationen verfügbar.</p>
+                            <RadzenAlert AlertStyle="AlertStyle.Danger" Variant="Variant.Flat" Shade="Shade.Dark">
+                                Dies bedeutet nicht, dass dieses Produkt frei von Rechten ist. Bitte kontaktieren Sie uns für weitere Informationen.
+                            </RadzenAlert>
+                        }
+                    </div>
+
+                    <button @onclick="AddToCart" class="btn btn-primary btn-buy">In den Warenkorb</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="comment-section">
+
+            <h3>Kommentare</h3>
+
+            <div class="mb-3">
+                <label for="comment" class="form-label">Kommentar hinzufügen:</label>
+                <InputTextArea @bind-Value=CommentText class="form-control" id="comment" rows="3"></InputTextArea>
+                <button @onclick=PostComment class="btn btn-primary mt-2">Senden</button>
+            </div>
+
+            <div class="comments">
+                @if (Product.Comments?.Count > 0)
+                {
+                    @foreach (var comment in Product.Comments)
+                    {
+                        <div class="comment">
+                            <img src="@comment.ProfileImage" alt="User Avatar">
+                            <div class="comment-body">
+                                <p><b>@comment.Author:</b></p>
+                                <p>@comment.Content</p>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p>Dieser Artikel hat keine Kommentare.</p>
+                }
+            </div>
+        </div>
     </div>
-  </div>
 }
 
 @code {
@@ -129,12 +142,14 @@
     private bool IsLoading = true;
     private bool IsLiked = false;
 
-    protected override async Task OnInitializedAsync() {
+    protected override async Task OnInitializedAsync()
+    {
         using var context = await DbFactory.CreateDbContextAsync();
 
         var product = await context.Products.Include(p => p.Comments).Include(p => p.Licence).FirstOrDefaultAsync(p => p.Id == Id);
 
-        if (product == null) {
+        if (product == null)
+        {
             ErrorMessage = "Das Produkt konnte nicht gefunden werden.";
             return;
         }
@@ -149,72 +164,89 @@
         Navigation.NavigateTo("/");
     }
 
-  /// <summary>
-  /// Toggles the like state of the product and saves it to the database.
-  /// </summary>
-  private async Task ToggleLike() {
-    IsLiked = !IsLiked;
+    /// <summary>
+    /// Toggles the like state of the product and saves it to the database.
+    /// </summary>
+    private async Task ToggleLike()
+    {
+        IsLiked = !IsLiked;
 
-    using var context = await DbFactory.CreateDbContextAsync();
+        using var context = await DbFactory.CreateDbContextAsync();
 
-    if (IsLiked) Product.Likes++;
-    else {
-      if (Product.Likes > 0) Product.Likes--;
+        if (IsLiked) Product.Likes++;
+        else
+        {
+            if (Product.Likes > 0) Product.Likes--;
+        }
+
+        context.Products.Update(Product);
+        await context.SaveChangesAsync();
     }
 
-    context.Products.Update(Product);
-    await context.SaveChangesAsync();
-  }
-
-  /// <summary>
-  /// Opens a dialog to edit the product and re-renders the component if the Product was edited.
-  /// </summary>
-  private async Task ShowEdit() {
-    // must be nullable, because the dialog can return null if it is closed with the x-button instead of the cancel button
-    bool? isEdited = await DialogService.OpenAsync<Edit>($"Produkt Nr. {Product.Id}",
-     new Dictionary<string, object> {
+    /// <summary>
+    /// Opens a dialog to edit the product and re-renders the component if the Product was edited.
+    /// </summary>
+    private async Task ShowEdit()
+    {
+        // must be nullable, because the dialog can return null if it is closed with the x-button instead of the cancel button
+        bool? isEdited = await DialogService.OpenAsync<Edit>($"Produkt Nr. {Product.Id}",
+         new Dictionary<string, object> {
        { "Product", Product },
-       { "OnSubmit", EventCallback.Factory.Create(this, () => UpdateProduct(Product))}
-       },
-     new DialogOptions() { Width = "60vw", Resizable = false, Draggable = false, CloseDialogOnOverlayClick = true }
-    );
+       { "OnSubmit", EventCallback.Factory.Create(this, () => UpdateProduct(Product))},
+       { "OnDelete", EventCallback.Factory.Create(this, () => DeleteProduct(Product))}
+           },
+         new DialogOptions() { Width = "60vw", Resizable = false, Draggable = false, CloseDialogOnOverlayClick = true }
+        );
 
-    // must be written like this, because nullable bool can't be compared to false directly
-    if (isEdited ?? false)
-      StateHasChanged();
-  }
-
-  /// <summary>
-  /// Posts a comment to the product.
-  /// </summary>
-  private async Task PostComment() {
-    if (string.IsNullOrWhiteSpace(CommentText)) {
-      return;
+        // must be written like this, because nullable bool can't be compared to false directly
+        if (isEdited ?? false)
+            StateHasChanged();
     }
 
-    Product.Comments?.Add(new Comment() {
-        Author = "Anonymous", // Anonymous, beacuse we don't have a user system yet
-        Content = CommentText,
-        ProfileImage = "https://picsum.photos/40/40"
-      });
+    /// <summary>
+    /// Posts a comment to the product.
+    /// </summary>
+    private async Task PostComment()
+    {
+        if (string.IsNullOrWhiteSpace(CommentText))
+        {
+            return;
+        }
 
-    CommentText = string.Empty;
+        Product.Comments?.Add(new Comment()
+            {
+                Author = "Anonymous", // Anonymous, beacuse we don't have a user system yet
+                Content = CommentText,
+                ProfileImage = "https://picsum.photos/40/40"
+            });
 
-    // save comment to database
-    using var context = await DbFactory.CreateDbContextAsync();
+        CommentText = string.Empty;
 
-    context.Products.Update(Product);
-    await context.SaveChangesAsync();
-  }
+        // save comment to database
+        using var context = await DbFactory.CreateDbContextAsync();
 
-  /// <summary>
-  /// Updates the given product in the database.
-  /// </summary>
-  /// <param name="product">The product to update.</param>
-  private async Task UpdateProduct(Product product) {
-    using var context = await DbFactory.CreateDbContextAsync();
+        context.Products.Update(Product);
+        await context.SaveChangesAsync();
+    }
 
-    context.Products.Update(product);
-    await context.SaveChangesAsync();
-  }
+    /// <summary>
+    /// Updates the given product in the database.
+    /// </summary>
+    /// <param name="product">The product to update.</param>
+    private async Task UpdateProduct(Product product)
+    {
+        using var context = await DbFactory.CreateDbContextAsync();
+
+        context.Products.Update(product);
+        await context.SaveChangesAsync();
+    }
+
+    private async Task DeleteProduct(Product product)
+    {
+        using var context = await DbFactory.CreateDbContextAsync();
+
+        context.Products.Remove(product);
+        await context.SaveChangesAsync();
+        Navigation.NavigateTo("/products");
+    }
 }
