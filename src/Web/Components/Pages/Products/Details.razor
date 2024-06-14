@@ -3,6 +3,7 @@
 @inject DialogService DialogService
 @inject ShoppingCartService ShoppingCartService
 @inject NavigationManager Navigation
+@inject AuthenticationStateProvider Auth
 @using Data.Models
 @using Microsoft.EntityFrameworkCore
 @using Web.Services
@@ -35,9 +36,12 @@ else
                         </svg>
                     </RadzenButton>
 
-                    <RadzenButton ButtonStyle="ButtonStyle.Secondary" Click="ShowEdit" Style="width: fit-content; margin: auto;">
-                        Bearbeiten
-                    </RadzenButton>
+                    @if (CanEdit)
+                    {
+                        <RadzenButton ButtonStyle="ButtonStyle.Secondary" Click="ShowEdit" Style="width: fit-content; margin: auto;">
+                            Bearbeiten
+                        </RadzenButton>
+                    }
                 </div>
             </div>
             <div class="col-md-6">
@@ -141,6 +145,7 @@ else
     public string ErrorMessage = string.Empty;
     private bool IsLoading = true;
     private bool IsLiked = false;
+    private bool CanEdit = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -156,6 +161,8 @@ else
 
         Product = product;
         IsLoading = false;
+        var state = await Auth.GetAuthenticationStateAsync();
+        CanEdit = state.User.IsInRole("Admin");
     }
 
     private void AddToCart()
