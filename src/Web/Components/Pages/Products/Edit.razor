@@ -172,11 +172,11 @@
   /// Updates the product in the database and closes the dialog with a true result, which indicates that the product was updated.
   /// </summary>
   async Task Submit() {
-    await OnSubmit.InvokeAsync();
     if (!string.IsNullOrEmpty(tempImage))
       Product.Image = tempImage;
     
-      DialogService.Close(true);
+    await OnSubmit.InvokeAsync();
+    DialogService.Close(true);
   }
 
   /// <summary>
